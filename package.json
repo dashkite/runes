@@ -1,0 +1,36 @@
+{
+  "name": "@dashkite/runes",
+  "version": "0.0.0",
+  "description": "Authenticated authorization for HTTP",
+  "exports": {
+    ".": {
+      "browser": "./build/browser/src/index.js",
+      "node": "./build/node/src/index.js"
+    },
+    "./*": {
+      "browser": "./build/browser/src/*.js",
+      "node": "./build/node/src/*.js"
+    }
+  },
+  "scripts": {
+    "test": "genie test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dashkite/runes.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dashkite/runes/issues"
+  },
+  "homepage": "https://github.com/dashkite/runes#readme",
+  "devDependencies": {
+    "@dashkite/amen": "^0.1.2",
+    "@dashkite/amen-console": "^0.0.1",
+    "@dashkite/assert": "^0.1.3",
+    "@dashkite/genie": "^0.5.11",
+    "@dashkite/genie-presets": "^0.5.7"
+  },
+  "dependencies": {
+    "panda-confidential": "^3.1.2"
+  }
+}
