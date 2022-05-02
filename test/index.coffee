@@ -6,14 +6,19 @@ import { confidential } from "panda-confidential"
 
 Confidential = confidential()
 
-import { issue, verify, JSON64 } from "../src"
+import fetch from "node-fetch"
+globalThis.fetch ?= fetch
+global.Request ?= fetch.Request
+
+import { issue, verify, match, store, lookup, JSON64 } from "../src"
 
 authorization =
-  domain: "dashkite.io"
+  origin: "https://workspaces.dashkite.io"
   expires: ( new Date ).toISOString()
   grants: [
-      resources: [ "team" ]
-      methods: [ "get", "put", "delete", "post" ]
+      resources: [ "account-workspaces" ]
+      bindings: account: "acme"
+      methods: [ "get" ]
   ]
 
 do ->
@@ -28,13 +33,14 @@ do ->
     to: "base64"
     await Confidential.randomBytes 16
 
+  { rune, nonce } = await issue authorization, secret
+
   print await test "@dashkite/runes",  [
 
     test "server", [
 
       test "issuance and verification", await do ->
 
-        { rune, nonce } = await issue authorization, secret
         [_authorization, hash ] = JSON64.decode rune
 
         [
@@ -57,14 +63,46 @@ do ->
             assert.deepEqual authorization, _authorization
 
           test "rune should fail to verify with altered authorization", ->
-            _authorization.grants[0].resources.push "accounts"
+            _authorization.grants[0].resources.push "workspaces"
             _rune = JSON64.encode [ _authorization, hash ]
             assert !( verify _rune, secret, nonce )
 
+          test "match", ->
+            request =
+              url:  "https://workspaces.dashkite.io/accounts/acme/workspaces"
+              method: "get"
+            assert await match request, authorization
           
+          test "match failure", ->
+            request =
+              url:  "https://workspaces.dashkite.io/accounts/fubar/workspaces"
+              method: "get"
+            assert !( await match request, authorization )
         ] 
 
+    test "client", [
 
+      test "store", ->
+        assert.equal null, store { rune, nonce }
+
+      test "lookup", ->
+        result = lookup
+          origin: "https://workspaces.dashkite.io"
+          resource: "account-workspaces"
+          bindings: account: "acme"
+          method: "get"
+        assert result?
+        assert.equal result.rune, rune
+        assert.equal result.nonce, nonce
+
+      test "lookup failure", ->
+        result = lookup
+          origin: "https://workspaces.dashkite.io"
+          resource: "team"
+          bindings: team: "foo"
+          method: "put"
+        assert !result?
+    ]
 
         
     ]
