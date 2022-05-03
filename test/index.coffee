@@ -35,8 +35,6 @@ do ->
 
   { rune, nonce } = await issue authorization, secret
 
-  console.log { rune }
-
   print await test "@dashkite/runes",  [
 
     test "server", [
