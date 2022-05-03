@@ -32,6 +32,7 @@
     "node-fetch": "^2.6.7"
   },
   "dependencies": {
+    "@msgpack/msgpack": "^2.7.2",
     "es6-url-template": "^3.0.2",
     "panda-confidential": "^3.1.2"
   }

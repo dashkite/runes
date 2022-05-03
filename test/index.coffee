@@ -10,7 +10,7 @@ import fetch from "node-fetch"
 globalThis.fetch ?= fetch
 global.Request ?= fetch.Request
 
-import { issue, verify, match, store, lookup, JSON64 } from "../src"
+import { issue, verify, match, store, lookup, JSON36 } from "../src"
 
 authorization =
   origin: "https://workspaces.dashkite.io"
@@ -35,13 +35,15 @@ do ->
 
   { rune, nonce } = await issue authorization, secret
 
+  console.log { rune }
+
   print await test "@dashkite/runes",  [
 
     test "server", [
 
       test "issuance and verification", await do ->
 
-        [_authorization, hash ] = JSON64.decode rune
+        [_authorization, hash ] = JSON36.decode rune
 
         [
 
@@ -64,7 +66,7 @@ do ->
 
           test "rune should fail to verify with altered authorization", ->
             _authorization.grants[0].resources.push "workspaces"
-            _rune = JSON64.encode [ _authorization, hash ]
+            _rune = JSON36.encode [ _authorization, hash ]
             assert !( verify _rune, secret, nonce )
 
           test "match", ->

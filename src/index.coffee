@@ -13,16 +13,16 @@ Base64 =
       to: "base64"
       await Confidential.randomBytes 4
 
-JSON64 =
+JSON36 =
   encode: (value) ->
     Confidential.convert
       from: "utf8"
-      to: "base64"
+      to: "base36"
       JSON.stringify value
   
   decode: (value) ->
     JSON.parse Confidential.convert
-      from: "base64"
+      from: "base36"
       to: "utf8"
       value
 
@@ -37,7 +37,7 @@ mac = ( message ) ->
     ( Confidential.hash message ).hash[0..31]
 
 _issue = ( authorization, secret, nonce ) ->
-  rune = JSON64.encode [
+  rune = JSON36.encode [
     authorization
     mac canonicalize authorization, 
       nonce, 
@@ -49,7 +49,7 @@ issue = ( authorization, secret ) ->
   _issue authorization, secret, await Base64.nonce()
 
 verify = ( rune, secret, nonce ) ->
-  [ authorization, hash ] = JSON64.decode rune
+  [ authorization, hash ] = JSON36.decode rune
   derived = _issue authorization, secret, nonce
   derived.rune == rune
 
@@ -93,7 +93,7 @@ match = ( request, { origin, grants, expires }) ->
 
 _storage = {}
 store = ({ rune, nonce }) ->
-  [ { domain, grants } ] = JSON64.decode rune
+  [ { domain, grants } ] = JSON36.decode rune
   _storage[ domain ] ?= {}
   for grant in grants
     for resource in grant.resources
@@ -110,4 +110,4 @@ lookup = ({ domain, resource, bindings, method }) ->
 
 has = ( query ) -> ( lookup query )?
 
-export { issue, verify, match, JSON64, store, lookup, has }
+export { issue, verify, match, JSON36, store, lookup, has }
