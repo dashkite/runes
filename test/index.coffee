@@ -41,7 +41,7 @@ do ->
 
       test "issuance and verification", await do ->
 
-        [_authorization, hash ] = JSON36.decode rune
+        [ _authorization, hash ] = JSON36.decode rune
 
         [
 
