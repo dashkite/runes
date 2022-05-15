@@ -6,19 +6,62 @@ import { confidential } from "panda-confidential"
 
 Confidential = confidential()
 
-import fetch from "node-fetch"
-globalThis.fetch ?= fetch
-global.Request ?= fetch.Request
-
 import { issue, verify, match, store, lookup, JSON36 } from "../src"
+import api from "./api"
+
+fetch = ( request ) ->
+  # TODO possibly switch back to target using helper 
+  #      to derive target from resource?
+  { resource } = request
+  switch resource.name
+    when "description"
+      api
+    when "workspace"
+      address: "acme"
+    when "workspaces"
+      [ { address: "acme" }, { address: "evilcorp" }]
+    when "account"
+      address: "alice"
+    else
+      throw new Error "oops that's not a pretend resource!"
 
 authorization =
-  origin: "https://workspaces.dashkite.io"
+
+  origin: "https://foo.dashkite.io"
   expires: ( new Date ).toISOString()
+  identity: "alice@acme.org"
+  resolvers:
+    account:
+      request:
+        resource: 
+          name: "account"
+          bindings: email: "alice@acme.org"
+    workspaces:
+      request:
+        resource:
+          name: "workspaces"
+          bindings: account: "${ account.address }"
+
   grants: [
-      resources: [ "account-workspaces" ]
-      bindings: account: "acme"
+
+      resources: [ "account" ]
+      bindings: email: "alice@acme.org"
       methods: [ "get" ]
+
+    ,
+
+      resources: [ "workspaces" ]
+      resolvers: [ "account" ]
+      bindings: account: "${ account.address }"
+      methods: [ "get" ]
+
+    ,
+
+      resources: [ "workspace" ]
+      resolvers: [ "workspaces" ]
+      bindings: workspace: "${ workspaces[*].address }"
+      methods: [ "get" ]
+
   ]
 
 do ->
@@ -33,17 +76,16 @@ do ->
     to: "base64"
     await Confidential.randomBytes 16
 
-  { rune, nonce } = await issue authorization, secret
+  { rune, nonce } = await issue { authorization, secret }
 
   print await test "@dashkite/runes",  [
 
-    test "server", [
+    test "server", await do ->
 
-      test "issuance and verification", await do ->
-
-        [ _authorization, hash ] = JSON36.decode rune
-
-        [
+      [ _authorization, hash ] = JSON36.decode rune
+      
+      [
+        test "issuance", [
 
           test "hash should always be 32 bytes", ->
             assert.equal 32,
@@ -52,12 +94,15 @@ do ->
                 to: "bytes"
                 hash
               .length
+        ]
+
+        test "verification", [
 
           test "rune should verify with correct secret and nonce", ->
-            assert verify rune, secret, nonce
+            assert verify { rune, secret, nonce }
           
           test "rune should fail to verify with forged secret", ->
-            assert !( verify rune, forged, nonce )
+            assert !( verify { rune, secret: forged, nonce } )
 
           test "authorization should be unchanged", ->
             assert.deepEqual authorization, _authorization
@@ -65,20 +110,27 @@ do ->
           test "rune should fail to verify with altered authorization", ->
             _authorization.grants[0].resources.push "workspaces"
             _rune = JSON36.encode [ _authorization, hash ]
-            assert !( verify _rune, secret, nonce )
+            assert !( verify { rune: _rune, secret, nonce } )
+        ]
+        
+        test "match", [
 
           test "match", ->
             request =
-              url:  "https://workspaces.dashkite.io/accounts/acme/workspaces"
+              url:  "https://foo.dashkite.io/workspace/acme"
               method: "get"
-            assert await match request, authorization
+            assert ( request = await match { fetch, request, authorization } )?
+            assert.equal "workspace", request.resource.name
+            assert.equal "acme", request.resource.bindings.workspace
+            
           
           test "match failure", ->
             request =
-              url:  "https://workspaces.dashkite.io/accounts/fubar/workspaces"
+              url:  "https://foo.dashkite.io/workspace/evil"
               method: "get"
-            assert !( await match request, authorization )
-        ] 
+            assert !( await match { fetch, request, authorization  })?
+        ]
+      ]
 
     test "client", [
 
@@ -87,9 +139,9 @@ do ->
 
       test "lookup", ->
         result = lookup
-          origin: "https://workspaces.dashkite.io"
-          resource: "account-workspaces"
-          bindings: account: "acme"
+          identity: "alice@acme.org"
+          origin: "https://foo.dashkite.io"
+          resource: "workspace"
           method: "get"
         assert result?
         assert.equal result.rune, rune
@@ -97,13 +149,12 @@ do ->
 
       test "lookup failure", ->
         result = lookup
-          origin: "https://workspaces.dashkite.io"
-          resource: "team"
-          bindings: team: "foo"
-          method: "put"
+          identity: "bob@acme.org"
+          origin: "https://foo.dashkite.io"
+          resource: "workspace"
+          method: "get"
         assert !result?
     ]
 
         
-    ]
   ]

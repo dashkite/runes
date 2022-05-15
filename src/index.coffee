@@ -1,19 +1,39 @@
+import * as Fn from "@dashkite/joy/function"
+import { generic } from "@dashkite/joy/generic"
 import * as Val from "@dashkite/joy/value"
+import * as Type from "@dashkite/joy/type"
 import { confidential } from "panda-confidential"
-import URLTemplate from "es6-url-template"
+import JSONQuery from "json-query"
+import * as Parse from "@dashkite/parse"
+import URITemplate from "uri-template.js"
+
+# TODO handle escaping of {}
+# these DO exist in JSON Query
+evaluate = Parse.parser Parse.pipe [
+  Parse.many Parse.any [
+    Parse.pipe [
+      Parse.between ( Parse.text "${" ), ( Parse.text "}" ), ( Parse.re /^[^\}]*/ )
+      Parse.map (expression) -> expression.trim()
+      Parse.tag "expression"
+    ]
+    Parse.re /^[^\$\{]*/
+  ]
+]
+
+query = ( expression, data ) ->
+  ( JSONQuery expression, { data } )?.value
 
 failure = (code) -> new Error code
 
 Confidential = confidential()
 
-Base64 =
+JSON36 =
+
   nonce: ->
     Confidential.convert
       from: "bytes"
-      to: "base64"
+      to: "base36"
       await Confidential.randomBytes 4
-
-JSON36 =
   encode: (value) ->
     Confidential.convert
       from: "utf8"
@@ -45,69 +65,215 @@ _issue = ( authorization, secret, nonce ) ->
   ]
   { rune, nonce }
 
-issue = ( authorization, secret ) ->
-  _issue authorization, secret, await Base64.nonce()
+issue = ({ authorization, secret }) ->
+  _issue authorization, secret, await JSON36.nonce()
 
-verify = ( rune, secret, nonce ) ->
+verify = ({ rune, secret, nonce }) ->
   [ authorization, hash ] = JSON36.decode rune
   derived = _issue authorization, secret, nonce
   derived.rune == rune
 
-discover = ({ origin }) ->
-  response = await fetch origin, headers: accept: "application/json"
-  response.json()
+discover = ({ fetch, origin }) ->
+  await fetch 
+    resource: { origin, name: "description" }
+    method: "get"
+    headers: accept: "application/json"
 
-_getResource = ({ api, name }) -> api.resources[name]
+command = ( object ) ->
+  [ name ] = Object.keys object
+  { name, bindings: object[ name ] }
 
-getResource = ( context ) ->
-  ( _getResource context ) ?
-    throw failure "invalid resource", context
+isCommand = ( object ) -> object?.name && object?.bindings
 
-getTarget = ( context ) ->
-  { bindings } = context
-  template = getTemplate context
-  expandTemplate template, bindings
+interpolate = generic 
+  name: "interpolate"
+  default: Fn.identity
 
-expandTemplate = (template, parameters) ->
-  (new URLTemplate template).expand parameters
+generic interpolate, Type.isObject, Type.isObject, ( object, context ) ->
+  result = {}
+  for key, value of object
+    result[ key ] = interpolate value, context
+  result
 
-getTemplate = ( context ) ->
-  getResource context
-    .template
+generic interpolate, Type.isArray, Type.isObject, ( array, context ) ->
+  interpolate value, context for value in array
 
-getURL = ( context ) ->
-  new URL (getTarget context), context.origin
+generic interpolate, Type.isString, Type.isObject, ( text, context ) -> 
+  result = null
+  for token in evaluate text
+    value = if Type.isString token
+      token 
+    else 
+      query token.expression, context
+    if result?
+      result = result.toString()
+      result += value
+    else
+      result = value
+  result
 
-match = ( request, { origin, grants, expires }) ->
-  api = await discover { origin }
-  for { resources, methods, bindings } in grants
-    for name in resources
-      try
-        url = getURL { origin, api, name, bindings }
-        if request.url == url.href
-          if request.method in methods
-            return true
-      catch error
-        console.error error
-  false
+Resolvers =
 
+  request: ( context, request ) ->
+    { fetch } = context
+    { resource } = request
+    request.method ?= "get"
+    resource.origin ?= context.authorization.origin
+    fetch request if ( request = await Grant.match { context..., request })?
+
+resolve = generic name: "enchant[resolve]"
+
+generic resolve, Type.isObject, Type.isString, ( context, template ) ->
+  interpolate template, context.data
+
+generic resolve, Type.isObject, Type.isObject, ( context, action ) ->
+  resolve context, command action
+
+generic resolve, Type.isObject, isCommand, ( context, { name, bindings } ) ->
+  Resolvers[ name ] context, bindings
+
+getTargetFromURL = ( url ) ->
+  url = new URL url
+  url.pathname + url.search
+
+getOriginFromURL = 
+
+Request =
+  origin: ( request ) ->
+    request._url ?= new URL request.url
+    request._url.origin
+
+  target: ( request ) ->
+    url = ( request._url ?= new URL request.url )
+    url.pathname + url.search
+
+Resource =
+  find: do ({ api } = {}) ->
+    ( context ) ->
+      { fetch, request } = context
+      origin = Request.origin request
+      target = Request.target request
+      api ?= await discover { fetch, origin }
+      for name, resource of api.resources
+        bindings = URITemplate.extract resource.template, target
+        if ( target == URITemplate.expand resource.template, bindings )
+          return { origin, name, bindings }
+      null
+
+match = ( context ) ->
+  { fetch, request, authorization } = context
+  resource = await Resource.find context
+  if resource? && ( resource.origin == authorization.origin )
+    Grant.match {
+      context...
+      request: {
+        request...
+        resource
+      }
+      data: {} 
+    }
+  
+mask = ( keys, object ) ->
+  result = {}
+  for key in keys
+    result[ key ] = object[ key ]
+  result
+
+Bindings =
+
+  resolve: ( context, bindings ) ->
+    result = {}
+    if bindings?
+      for key, expression of bindings
+        result[ key ] = await resolve context, expression
+    result
+
+  find: ( target, candidates ) ->
+    candidates.find ( candidate ) -> Val.equal target, candidate
+
+  match: ( target, bindings ) ->
+    Bindings.find target, Bindings.expand bindings
+
+  expand: ( bindings ) ->
+    [ key, rest... ] = Object.keys bindings
+
+    result = []
+
+    if rest.length > 0
+      rest = Bindings.expand mask rest, bindings
+      if Type.isArray bindings[ key ]
+        for value in bindings[ key ]
+          for _bindings in rest
+            result.push { _bindings..., [ key ]: value }
+      else
+        for _bindings in rest
+          result.push { _bindings..., [ key ]: value }
+    else
+      if Type.isArray bindings[ key ]
+        for value in bindings[ key ]
+          result.push { [ key ]: value }
+      else
+        result.push bindings
+
+    result  
+
+Grant =
+
+  find: ({ request, authorization }) -> 
+    { origin, grants } = authorization
+    { resource } = request
+    grants.find ( grant ) -> 
+      ( resource.origin == origin ) &&
+        ( resource.name in grant.resources ) &&
+        ( request.method in grant.methods )
+
+  resolve: ( context, grant ) ->
+    if grant.resolvers?
+      { authorization, data } = context
+      { resolvers } = authorization
+      if grant.resolvers?
+        for name in grant.resolvers
+          if resolvers[ name ]?
+            data[ name ] ?= await resolve context, resolvers[ name ]
+          else
+            throw failure "bad resolver", name
+      data
+  
+  bind: ( context, grant ) -> Bindings.resolve context, grant.bindings
+
+  match: ( context ) ->
+    if ( grant = Grant.find context )?
+      await Grant.resolve context, grant
+      bindings = await Grant.bind context, grant
+      { request } = context
+      { resource } = request
+      target = interpolate resource.bindings, context.data
+      if ( Bindings.match target, bindings )?
+        { request..., resource: { resource..., bindings: target }}
+      
+# TODO in theory it's still possible to have two runes 
+#      associated with the same identity/origin/resource/method tuple
+
+# TODO use idb or localstorage
 _storage = {}
 store = ({ rune, nonce }) ->
-  [ { domain, grants } ] = JSON36.decode rune
-  _storage[ domain ] ?= {}
+  [ { identity, origin, grants } ] = JSON36.decode rune
+  _storage[ identity ] ?= {}
+  _storage[ identity ][ origin ] ?= {}
   for grant in grants
     for resource in grant.resources
       for method in grant.methods
         { bindings } = grant
-        _storage[ domain ][ resource ] ?= {}
-        _storage[ domain ][ resource ][ method ] ?= { rune, nonce, bindings }
+        _storage[ identity ][ origin ][ resource ] ?= {}
+        _storage[ identity ][ origin ][ resource ][ method ] = { rune, nonce, bindings }
   null
 
-lookup = ({ domain, resource, bindings, method }) ->
-  if ( result = _storage[ domain ]?[ resource ]?[ method ] )?
-    if Val.equal bindings, result.bindings
-      result
+lookup = ({ identity, origin, resource, bindings, method }) ->
+  if ( result = _storage[ identity ]?[ origin ]?[ resource ]?[ method ] )?
+    result
 
 has = ( query ) -> ( lookup query )?
 
-export { issue, verify, match, JSON36, store, lookup, has }
+decode = JSON36.decode
+
+export { issue, verify, match, decode, JSON36, store, lookup, has }
