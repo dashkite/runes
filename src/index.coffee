@@ -3,25 +3,8 @@ import { generic } from "@dashkite/joy/generic"
 import * as Val from "@dashkite/joy/value"
 import * as Type from "@dashkite/joy/type"
 import { confidential } from "panda-confidential"
-import JSONQuery from "json-query"
-import * as Parse from "@dashkite/parse"
+import { expand } from "@dashkite/polaris"
 import URITemplate from "uri-template.js"
-
-# TODO handle escaping of {}
-# these DO exist in JSON Query
-evaluate = Parse.parser Parse.pipe [
-  Parse.many Parse.any [
-    Parse.pipe [
-      Parse.between ( Parse.text "${" ), ( Parse.text "}" ), ( Parse.re /^[^\}]*/ )
-      Parse.map (expression) -> expression.trim()
-      Parse.tag "expression"
-    ]
-    Parse.re /^[^\$\{]*/
-  ]
-]
-
-query = ( expression, data ) ->
-  ( JSONQuery expression, { data } )?.value
 
 failure = (code) -> new Error code
 
@@ -85,33 +68,6 @@ command = ( object ) ->
 
 isCommand = ( object ) -> object?.name && object?.bindings
 
-interpolate = generic 
-  name: "interpolate"
-  default: Fn.identity
-
-generic interpolate, Type.isObject, Type.isObject, ( object, context ) ->
-  result = {}
-  for key, value of object
-    result[ key ] = interpolate value, context
-  result
-
-generic interpolate, Type.isArray, Type.isObject, ( array, context ) ->
-  interpolate value, context for value in array
-
-generic interpolate, Type.isString, Type.isObject, ( text, context ) -> 
-  result = null
-  for token in evaluate text
-    value = if Type.isString token
-      token 
-    else 
-      query token.expression, context
-    if result?
-      result = result.toString()
-      result += value
-    else
-      result = value
-  result
-
 Resolvers =
 
   request: ( context, request ) ->
@@ -124,19 +80,13 @@ Resolvers =
 resolve = generic name: "enchant[resolve]"
 
 generic resolve, Type.isObject, Type.isString, ( context, template ) ->
-  interpolate template, context.data
+  expand template, context.data
 
 generic resolve, Type.isObject, Type.isObject, ( context, action ) ->
   resolve context, command action
 
 generic resolve, Type.isObject, isCommand, ( context, { name, bindings } ) ->
   Resolvers[ name ] context, bindings
-
-getTargetFromURL = ( url ) ->
-  url = new URL url
-  url.pathname + url.search
-
-getOriginFromURL = 
 
 Request =
   origin: ( request ) ->
@@ -148,12 +98,12 @@ Request =
     url.pathname + url.search
 
 Resource =
-  find: do ({ api } = {}) ->
+  find: do ( cache = {}) ->
     ( context ) ->
       { fetch, request } = context
       origin = Request.origin request
       target = Request.target request
-      api ?= await discover { fetch, origin }
+      api = ( cache[ origin ] ?= await discover { fetch, origin } )
       for name, resource of api.resources
         bindings = URITemplate.extract resource.template, target
         if ( target == URITemplate.expand resource.template, bindings )
@@ -222,7 +172,7 @@ Grant =
   find: ({ request, authorization }) -> 
     { origin, grants } = authorization
     { resource } = request
-    grants.find ( grant ) -> 
+    grants.find ( grant ) ->
       ( resource.origin == origin ) &&
         ( resource.name in grant.resources ) &&
         ( request.method in grant.methods )
@@ -247,7 +197,7 @@ Grant =
       bindings = await Grant.bind context, grant
       { request } = context
       { resource } = request
-      target = interpolate resource.bindings, context.data
+      target = expand resource.bindings, context.data
       if ( Bindings.match target, bindings )?
         { request..., resource: { resource..., bindings: target }}
       
