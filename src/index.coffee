@@ -56,11 +56,11 @@ verify = ({ rune, secret, nonce }) ->
   derived = _issue authorization, secret, nonce
   derived.rune == rune
 
-discover = ({ fetch, origin }) ->
-  await fetch 
-    resource: { origin, name: "description" }
-    method: "get"
-    headers: accept: "application/json"
+# discover = ({ fetch, origin }) ->
+#   await fetch 
+#     resource: { origin, name: "description" }
+#     method: "get"
+#     headers: accept: "application/json"
 
 command = ( object ) ->
   [ name ] = Object.keys object
@@ -88,38 +88,36 @@ generic resolve, Type.isObject, Type.isObject, ( context, action ) ->
 generic resolve, Type.isObject, isCommand, ( context, { name, bindings } ) ->
   Resolvers[ name ] context, bindings
 
-Request =
-  origin: ( request ) ->
-    request._url ?= new URL request.url
-    request._url.origin
+# Request =
+#   origin: ( request ) ->
+#     request._url ?= new URL request.url
+#     request._url.origin
 
-  target: ( request ) ->
-    url = ( request._url ?= new URL request.url )
-    url.pathname + url.search
+#   target: ( request ) ->
+#     url = ( request._url ?= new URL request.url )
+#     url.pathname + url.search
 
-Resource =
-  find: do ( cache = {}) ->
-    ( context ) ->
-      { fetch, request } = context
-      origin = Request.origin request
-      target = Request.target request
-      api = ( cache[ origin ] ?= await discover { fetch, origin } )
-      for name, resource of api.resources
-        bindings = URITemplate.extract resource.template, target
-        if ( target == URITemplate.expand resource.template, bindings )
-          return { origin, name, bindings }
-      null
+# Resource =
+#   find: do ( cache = {}) ->
+#     ( context ) ->
+#       { fetch, request } = context
+#       origin = Request.origin request
+#       target = Request.target request
+#       api = ( cache[ origin ] ?= await discover { fetch, origin } )
+#       for name, resource of api.resources
+#         bindings = URITemplate.extract resource.template, target
+#         if ( target == URITemplate.expand resource.template, bindings )
+#           return { origin, name, bindings }
+#       null
 
 match = ( context ) ->
   { fetch, request, authorization } = context
-  resource = await Resource.find context
+  # resource = await Resource.find context
+  { resource } = request
   if resource? && ( resource.origin == authorization.origin )
     Grant.match {
       context...
-      request: {
-        request...
-        resource
-      }
+      request
       data: {} 
     }
   
