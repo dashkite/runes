@@ -75,7 +75,9 @@ Resolvers =
     { resource } = request
     request.method ?= "get"
     resource.origin ?= context.authorization.origin
-    fetch request if ( request = await Grant.match { context..., request })?
+    response = await fetch request if ( request = await Grant.match { context..., request })?
+    #TODO We should check the content-type?
+    response.content
 
 resolve = generic name: "enchant[resolve]"
 
@@ -192,6 +194,7 @@ Grant =
   match: ( context ) ->
     if ( grant = Grant.find context )?
       await Grant.resolve context, grant
+      console.log "Rune Match", context.data
       bindings = await Grant.bind context, grant
       { request } = context
       { resource } = request
