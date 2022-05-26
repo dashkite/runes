@@ -1,6 +1,7 @@
 import assert from "@dashkite/assert"
 import { test, success } from "@dashkite/amen"
 import print from "@dashkite/amen-console"
+import {sleep} from "panda-parchment"
 
 import { confidential } from "panda-confidential"
 
@@ -15,20 +16,21 @@ fetch = ( request ) ->
   { resource } = request
   switch resource.name
     when "description"
-      api
+      content: api
     when "workspace"
-      address: "acme"
+      content: address: "acme"
     when "workspaces"
-      [ { address: "acme" }, { address: "evilcorp" }]
+      content: [ { address: "acme" }, { address: "evilcorp" }]
     when "account"
-      address: "alice"
+      content: address: "alice"
     else
       throw new Error "oops that's not a pretend resource!"
 
 authorization =
 
   origin: "https://foo.dashkite.io"
-  expires: ( new Date ).toISOString()
+  expires:
+    days: 30
   identity: "alice@acme.org"
   resolvers:
     account:
@@ -104,6 +106,8 @@ do ->
           test "rune should fail to verify with forged secret", ->
             assert !( verify { rune, secret: forged, nonce } )
 
+          test "rune should fail when expired"
+
           test "authorization should be unchanged", ->
             assert.deepEqual authorization, _authorization
 
@@ -117,7 +121,10 @@ do ->
 
           test "match", ->
             request =
-              url:  "https://foo.dashkite.io/workspace/acme"
+              resource:  
+                origin: "https://foo.dashkite.io"
+                name: "workspace"
+                bindings: workspace: "acme"
               method: "get"
             assert ( request = await match { fetch, request, authorization } )?
             assert.equal "workspace", request.resource.name
@@ -126,7 +133,10 @@ do ->
           
           test "match failure", ->
             request =
-              url:  "https://foo.dashkite.io/workspace/evil"
+              resource:
+                origin: "https://foo.dashkite.io"
+                name: "workspace"
+                bindings: workspace: "evil"
               method: "get"
             assert !( await match { fetch, request, authorization  })?
         ]

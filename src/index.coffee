@@ -49,10 +49,31 @@ _issue = ( authorization, secret, nonce ) ->
   { rune, nonce }
 
 issue = ({ authorization, secret }) ->
+  date = new Date()
+  expires = timestamp: null
+  if authorization.expires.days?
+    date.setDate date.getDate() + authorization.expires.days
+    expires.timestamp = date.toISOString()
+  else if authorization.expires.hours?
+    date.setHours date.getHours() + authorization.expires.hours
+    expires.timestamp = date.toISOString()
+  else if authorization.expires.minutes?
+    date.setMinutes date.getMinutes() + authorization.expires.minutes
+    expires.timestamp = date.toISOString()
+  else if authorization.expires.seconds?
+    date.setSeconds date.getSeconds() + authorization.expires.seconds
+    expires.timestamp = date.toISOString()
+
+  authorization.expires = expires.timestamp
+  console.log authorization
   _issue authorization, secret, await JSON36.nonce()
 
 verify = ({ rune, secret, nonce }) ->
   [ authorization, hash ] = JSON36.decode rune
+  date = new Date()
+  if authorization.expires < date.toISOString()
+    console.log "Rune Expired"
+    return false
   derived = _issue authorization, secret, nonce
   derived.rune == rune
 
