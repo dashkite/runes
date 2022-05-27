@@ -65,7 +65,6 @@ issue = ({ authorization, secret }) ->
     expires.timestamp = date.toISOString()
 
   authorization.expires = expires.timestamp
-  console.log authorization
   _issue authorization, secret, await JSON36.nonce()
 
 verify = ({ rune, secret, nonce }) ->
