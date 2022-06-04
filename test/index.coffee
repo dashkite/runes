@@ -7,7 +7,9 @@ import { confidential } from "panda-confidential"
 
 Confidential = confidential()
 
-import { issue, verify, match, store, lookup, JSON36 } from "../src"
+import { issue, verify, match, JSON36 } from "../src"
+import { store, lookup } from "../src/client"
+
 import api from "./api"
 
 fetch = ( request ) ->

@@ -2,32 +2,11 @@ import * as Fn from "@dashkite/joy/function"
 import { generic } from "@dashkite/joy/generic"
 import * as Val from "@dashkite/joy/value"
 import * as Type from "@dashkite/joy/type"
-import { confidential } from "panda-confidential"
 import { expand } from "@dashkite/polaris"
 import URITemplate from "uri-template.js"
-
+import { Confidential, JSON36 } from "./helpers"
+ 
 failure = (code) -> new Error code
-
-Confidential = confidential()
-
-JSON36 =
-
-  nonce: ->
-    Confidential.convert
-      from: "bytes"
-      to: "base36"
-      await Confidential.randomBytes 4
-  encode: (value) ->
-    Confidential.convert
-      from: "utf8"
-      to: "base36"
-      JSON.stringify value
-  
-  decode: (value) ->
-    JSON.parse Confidential.convert
-      from: "base36"
-      to: "utf8"
-      value
 
 canonicalize = ( authorization, nonce, secret ) ->
   Confidential.Message.from "utf8",
@@ -222,29 +201,8 @@ Grant =
       if ( Bindings.match target, bindings )?
         { request..., resource: { resource..., bindings: target }}
       
-# TODO in theory it's still possible to have two runes 
-#      associated with the same identity/origin/resource/method tuple
 
-# TODO use idb or localstorage
-_storage = {}
-store = ({ rune, nonce }) ->
-  [ { identity, origin, grants } ] = JSON36.decode rune
-  _storage[ identity ] ?= {}
-  _storage[ identity ][ origin ] ?= {}
-  for grant in grants
-    for resource in grant.resources
-      for method in grant.methods
-        { bindings } = grant
-        _storage[ identity ][ origin ][ resource ] ?= {}
-        _storage[ identity ][ origin ][ resource ][ method ] = { rune, nonce, bindings }
-  null
-
-lookup = ({ identity, origin, resource, bindings, method }) ->
-  if ( result = _storage[ identity ]?[ origin ]?[ resource ]?[ method ] )?
-    result
-
-has = ( query ) -> ( lookup query )?
 
 decode = JSON36.decode
 
-export { issue, verify, match, decode, JSON36, store, lookup, has }
+export { issue, verify, match, decode, JSON36 }
