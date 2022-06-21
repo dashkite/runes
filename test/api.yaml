@@ -30,6 +30,17 @@ resources:
             content-type: [ "application/json" ]
             status: [ 200 ]
 
+
+  workspace-subscriptions:
+    template: /workspaces/{workspace}/subscriptions/{product}
+    methods:
+      get:
+        signatures:
+          request: {}
+          response:
+            content-type: [ "application/json" ]
+            status: [ 200 ]
+
   account:
     template: /accounts{?email,address}
     methods:

@@ -2,6 +2,7 @@ import assert from "@dashkite/assert"
 import { test, success } from "@dashkite/amen"
 import print from "@dashkite/amen-console"
 import {sleep} from "panda-parchment"
+import "./local-storage"
 
 import { confidential } from "panda-confidential"
 
@@ -25,6 +26,8 @@ fetch = ( request ) ->
       content: [ { address: "acme" }, { address: "evilcorp" }]
     when "account"
       content: address: "alice"
+    when "workspace-subscriptions"
+      content: subscription: "active"
     else
       throw new Error "oops that's not a pretend resource!"
 
@@ -64,6 +67,15 @@ authorization =
       resources: [ "workspace" ]
       resolvers: [ "workspaces" ]
       bindings: workspace: "${ workspaces[*].address }"
+      methods: [ "get" ]
+
+    ,
+
+      resources: [ "workspace-subscriptions" ]
+      resolvers: [ "workspaces" ]
+      bindings: 
+        workspace: "${ workspaces[*].address }"
+        # product: "*"
       methods: [ "get" ]
 
   ]
@@ -131,7 +143,30 @@ do ->
             assert ( request = await match { fetch, request, authorization } )?
             assert.equal "workspace", request.resource.name
             assert.equal "acme", request.resource.bindings.workspace
-            
+
+          test "wildcard-match", ->
+            request =
+              resource:  
+                origin: "https://foo.dashkite.io"
+                name: "workspace-subscriptions"
+                bindings: 
+                  workspace: "acme"
+                  product: "graphene"
+              method: "get"
+            assert ( request = await match { fetch, request, authorization } )?
+            assert.equal "workspace-subscriptions", request.resource.name
+            assert.equal "graphene", request.resource.bindings.product
+
+          test "wildcard-failure", ->
+            request =
+              resource:  
+                origin: "https://foo.dashkite.io"
+                name: "workspace-subscriptions"
+                bindings: 
+                  workspace: "evil"
+                  product: "graphene"
+              method: "get"
+            assert !( await match { fetch, request, authorization } )?
           
           test "match failure", ->
             request =
