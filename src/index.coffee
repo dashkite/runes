@@ -50,7 +50,6 @@ verify = ({ rune, secret, nonce }) ->
   [ authorization, hash ] = JSON36.decode rune
   date = new Date()
   if authorization.expires < date.toISOString()
-    console.log "Rune Expired"
     return false
   derived = _issue authorization, secret, nonce
   derived.rune == rune
@@ -78,7 +77,12 @@ Resolvers =
     #TODO We should check the content-type?
     response.content
 
-resolve = generic name: "enchant[resolve]"
+  binding: ( context, binding ) ->
+    context.request.resource.bindings[ binding ]
+
+resolve = generic name: "resolve[Enchant]"
+
+generic resolve, Type.isObject, Type.isUndefined, -> null
 
 generic resolve, Type.isObject, Type.isString, ( context, template ) ->
   expand template, context.data
@@ -87,7 +91,7 @@ generic resolve, Type.isObject, Type.isObject, ( context, action ) ->
   resolve context, command action
 
 generic resolve, Type.isObject, isCommand, ( context, { name, bindings } ) ->
-  Resolvers[ name ] context, bindings
+  Resolvers[ name ].apply null, [ context, bindings ]
 
 # Request =
 #   origin: ( request ) ->
@@ -144,6 +148,7 @@ Bindings =
     Bindings.find target, Bindings.expand bindings
 
   expand: ( bindings ) ->
+
     [ key, rest... ] = Object.keys bindings
 
     result = []
@@ -156,14 +161,14 @@ Bindings =
             result.push { _bindings..., [ key ]: value }
       else
         for _bindings in rest
-          result.push { _bindings..., [ key ]: value }
+          result.push { _bindings..., [ key ]: bindings[ key ] }
     else
       if Type.isArray bindings[ key ]
         for value in bindings[ key ]
           result.push { [ key ]: value }
       else
         result.push bindings
-
+    
     result  
 
 Grant =
@@ -180,23 +185,24 @@ Grant =
     if grant.resolvers?
       { authorization, data } = context
       { resolvers } = authorization
-      if grant.resolvers?
-        for name in grant.resolvers
-          if resolvers[ name ]?
-            data[ name ] ?= await resolve context, resolvers[ name ]
-          else
-            throw failure "bad resolver", name
+      for name in grant.resolvers
+        if resolvers[ name ]?
+          data[ name ] ?= await resolve context, resolvers[ name ]
+        else
+          throw failure "bad resolver", name
       data
   
-  bind: ( context, grant ) -> Bindings.resolve context, grant.bindings
+  bind: ( context, grant ) -> 
+    Bindings.resolve context,
+      expand grant.bindings, context.data
 
   match: ( context ) ->
     if ( grant = Grant.find context )?
       await Grant.resolve context, grant
-      console.log "Rune Match", context.data
       bindings = await Grant.bind context, grant
       { request } = context
       { resource } = request
+      # TODO why do we do this again?
       target = expand resource.bindings, context.data
       if ( Bindings.match target, bindings )?
         { request..., resource: { resource..., bindings: target }}
