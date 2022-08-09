@@ -73,6 +73,8 @@ Resolvers =
     { resource } = request
     request.method ?= "get"
     resource.origin ?= context.authorization.origin
+    console.log "Resolver Resource", resource
+    console.log "Resolver Request", request
     response = await fetch request if ( request = await Grant.match { context..., request })?
     #TODO We should check the content-type?
     response.content
@@ -202,8 +204,10 @@ Grant =
       bindings = await Grant.bind context, grant
       { request } = context
       { resource } = request
-      # TODO why do we do this again?
+      #TODO indicate in the context whether we should expand
       target = expand resource.bindings, context.data
+      for key, value of target
+        bindings[key] ?= value
       if ( Bindings.match target, bindings )?
         { request..., resource: { resource..., bindings: target }}
       
