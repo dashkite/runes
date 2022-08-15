@@ -5,7 +5,7 @@ import { JSON36 } from "./helpers"
 
 store = ({ rune, nonce }) ->
   [ { identity, origin, grants } ] = JSON36.decode rune
-  if (data = window.localStorage.getItem identity)?
+  if (data = localStorage.getItem identity)?
     _identity = JSON.parse data
   else
     _identity = {}
@@ -16,11 +16,11 @@ store = ({ rune, nonce }) ->
         { bindings } = grant
         _identity[ origin ][ resource ] ?= {}
         _identity[ origin ][ resource ][ method ] = { rune, nonce, bindings }
-  window.localStorage.setItem identity, JSON.stringify _identity
+  localStorage.setItem identity, JSON.stringify _identity
   null
 
 lookup = ({ identity, origin, resource, bindings, method }) ->
-  if (data = window.localStorage.getItem identity)?
+  if (data = localStorage.getItem identity)?
     _identity = JSON.parse data
     if ( result = _identity[ origin ]?[ resource ]?[ method ] )?
       result

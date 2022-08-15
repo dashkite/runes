@@ -73,18 +73,17 @@ Resolvers =
     { resource } = request
     request.method ?= "get"
     resource.origin ?= context.authorization.origin
-    console.log "Resolver Resource", resource
-    console.log "Resolver Request", request
     response = await fetch request if ( request = await Grant.match { context..., request })?
     #TODO We should check the content-type?
     response.content
 
-  binding: ( context, binding ) ->
-    context.request.resource.bindings[ binding ]
-
 resolve = generic name: "resolve[Enchant]"
 
 generic resolve, Type.isObject, Type.isUndefined, -> null
+
+generic resolve, Type.isObject, Type.isArray, ( context, expressions ) ->
+  for expression in expressions
+    resolve context, expression
 
 generic resolve, Type.isObject, Type.isString, ( context, template ) ->
   expand template, context.data
