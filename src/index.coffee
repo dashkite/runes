@@ -3,7 +3,6 @@ import { generic } from "@dashkite/joy/generic"
 import * as Val from "@dashkite/joy/value"
 import * as Type from "@dashkite/joy/type"
 import { expand } from "@dashkite/polaris"
-import URITemplate from "uri-template.js"
 import { Confidential, JSON36 } from "./helpers"
  
 failure = (code) -> new Error code
@@ -210,8 +209,6 @@ Grant =
       if ( Bindings.match target, bindings )?
         { request..., resource: { resource..., bindings: target }}
       
-
-
 decode = JSON36.decode
 
 export { issue, verify, match, decode, JSON36 }

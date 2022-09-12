@@ -12,3 +12,4 @@ LocalStorage =
 
 
 global.window = localStorage: LocalStorage
+globalThis.localStorage = LocalStorage
