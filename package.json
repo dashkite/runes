@@ -33,8 +33,10 @@
     "panda-parchment": "^6.0.4"
   },
   "dependencies": {
+    "@dashkite/enchant": "file:../enchant",
     "@dashkite/joy": "^0.3.16",
     "@dashkite/polaris": "file:../polaris",
+    "@js-temporal/polyfill": "^0.4.3",
     "panda-confidential": "^3.1.2"
   }
 }

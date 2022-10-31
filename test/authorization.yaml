@@ -1,0 +1,64 @@
+domain: foo.dashkite.io
+
+expires:
+  days: 30
+
+identity: alice@acme.org
+
+resolvers:
+
+  - name: account
+    action:
+      name: request
+      value: 
+        resource: 
+          name: account
+          bindings:
+            email: alice@acme.org
+
+  - name: workspaces
+    action:
+      name: request
+      value:
+        resource:
+          name: workspaces
+          bindings:
+            account: ${ account.address }
+
+grants:
+
+  - resources:
+      include:
+        - account
+    methods:
+      - get
+    bindings:
+      email: alice@acme.org
+
+  - resources:
+      include:
+        - workspaces
+    methods:
+      - get
+    resolvers:
+      - account
+    bindings:
+      account: ${ account.address }
+
+  - resources:
+      include: workspace
+    methods:
+      - get
+    resolvers:
+      - workspace
+    bindings:
+      workspace: ${ workspaces[*].address }
+
+  - resources:
+      include: workspace-subscriptions
+    methods:
+      - get
+    resolvers:
+      - workspaces
+    bindings:
+      workspace: ${ workspaces[*].address }

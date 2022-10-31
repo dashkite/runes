@@ -1,4 +1,5 @@
 import { confidential } from "panda-confidential"
+import { Temporal } from "@js-temporal/polyfill"
 
 Confidential = confidential()
 
@@ -21,4 +22,16 @@ JSON36 =
       to: "utf8"
       value
 
-export { JSON36, Confidential }
+When =
+  
+  now: -> Temporal.Now.zonedDateTimeISO()
+
+  toISOString: ( t ) -> 
+    t.toString
+      timeZoneName: "never"
+      smallestUnit: "second"
+
+  add: ( t, d ) -> t.add d
+
+
+export { JSON36, Confidential, When }

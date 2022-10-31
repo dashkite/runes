@@ -12,6 +12,7 @@ import { issue, verify, match, JSON36 } from "../src"
 import { store, lookup } from "../src/client"
 
 import api from "./api"
+import authorization from "./authorization"
 
 fetch = ( request ) ->
   # TODO possibly switch back to target using helper 
@@ -30,55 +31,6 @@ fetch = ( request ) ->
       content: subscription: "active"
     else
       throw new Error "oops that's not a pretend resource!"
-
-authorization =
-
-  origin: "https://foo.dashkite.io"
-  expires:
-    days: 30
-  identity: "alice@acme.org"
-  resolvers:
-    account:
-      request:
-        resource: 
-          name: "account"
-          bindings: email: "alice@acme.org"
-    workspaces:
-      request:
-        resource:
-          name: "workspaces"
-          bindings: account: "${ account.address }"
-
-  grants: [
-
-      resources: [ "account" ]
-      bindings: email: "alice@acme.org"
-      methods: [ "get" ]
-
-    ,
-
-      resources: [ "workspaces" ]
-      resolvers: [ "account" ]
-      bindings: account: "${ account.address }"
-      methods: [ "get" ]
-
-    ,
-
-      resources: [ "workspace" ]
-      resolvers: [ "workspaces" ]
-      bindings: workspace: "${ workspaces[*].address }"
-      methods: [ "get" ]
-
-    ,
-
-      resources: [ "workspace-subscriptions" ]
-      resolvers: [ "workspaces" ]
-      bindings: 
-        workspace: "${ workspaces[*].address }"
-        # product: "*"
-      methods: [ "get" ]
-
-  ]
 
 do ->
 
@@ -123,7 +75,13 @@ do ->
           test "rune should fail when expired"
 
           test "authorization should be unchanged", ->
-            assert.deepEqual authorization, _authorization
+            # TODO check expires as well
+            # expires will have converted to an ISO string, so we check
+            # the domain and grant instead
+            # we can check expires too if we make temporal helpers
+            # into a separate module, importable
+            assert.equal authorization.domain, _authorization.domain
+            assert.deepEqual authorization.grants, _authorization.grants
 
           test "rune should fail to verify with altered authorization", ->
             _authorization.grants[0].resources.push "workspaces"
@@ -135,8 +93,8 @@ do ->
 
           test "match", ->
             request =
+              domain: "foo.dashkite.io"
               resource:  
-                origin: "https://foo.dashkite.io"
                 name: "workspace"
                 bindings: workspace: "acme"
               method: "get"
@@ -146,8 +104,8 @@ do ->
 
           test "wildcard-match", ->
             request =
+              domain: "foo.dashkite.io"
               resource:  
-                origin: "https://foo.dashkite.io"
                 name: "workspace-subscriptions"
                 bindings: 
                   workspace: "acme"
@@ -159,8 +117,8 @@ do ->
 
           test "wildcard-failure", ->
             request =
+              domain: "foo.dashkite.io"
               resource:  
-                origin: "https://foo.dashkite.io"
                 name: "workspace-subscriptions"
                 bindings: 
                   workspace: "evil"
@@ -170,8 +128,8 @@ do ->
           
           test "match failure", ->
             request =
+              domain: "foo.dashkite.io"
               resource:
-                origin: "https://foo.dashkite.io"
                 name: "workspace"
                 bindings: workspace: "evil"
               method: "get"
@@ -187,7 +145,7 @@ do ->
       test "lookup", ->
         result = lookup
           identity: "alice@acme.org"
-          origin: "https://foo.dashkite.io"
+          domain: "foo.dashkite.io"
           resource: "workspace"
           method: "get"
         assert result?
@@ -197,7 +155,7 @@ do ->
       test "lookup failure", ->
         result = lookup
           identity: "bob@acme.org"
-          origin: "https://foo.dashkite.io"
+          domain: "foo.dashkite.io"
           resource: "workspace"
           method: "get"
         assert !result?
