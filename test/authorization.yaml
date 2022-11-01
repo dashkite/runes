@@ -28,16 +28,14 @@ resolvers:
 grants:
 
   - resources:
-      include:
-        - account
+      - account
     methods:
       - get
     bindings:
       email: alice@acme.org
 
   - resources:
-      include:
-        - workspaces
+      - workspaces
     methods:
       - get
     resolvers:
@@ -46,8 +44,7 @@ grants:
       account: ${ account.address }
 
   - resources:
-      include: 
-        - workspace
+      - workspace
     methods:
       - get
     resolvers:
@@ -56,8 +53,7 @@ grants:
       workspace: ${ workspaces[*].address }
 
   - resources:
-      include: 
-        - workspace-subscriptions
+      - workspace-subscriptions
     methods:
       - get
     resolvers:

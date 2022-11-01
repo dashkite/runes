@@ -86,7 +86,7 @@ do ->
             assert.deepEqual authorization.grants, _authorization.grants
 
           test "rune should fail to verify with altered authorization", ->
-            _authorization.grants[0].resources.include.push "workspaces"
+            _authorization.grants[0].resources.push "workspaces"
             _rune = JSON36.encode [ _authorization, hash ]
             assert !( verify { rune: _rune, secret, nonce } )
         ]
