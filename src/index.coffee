@@ -1,4 +1,8 @@
 export * from "./match"
 export * from "./issue"
 export * from "./verify"
-export { decode } from "./helpers"
+import { JSON36 } from "./helpers"
+
+{ decode } = JSON36
+
+export { decode }

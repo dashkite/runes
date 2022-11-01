@@ -8,29 +8,31 @@ import { confidential } from "panda-confidential"
 
 Confidential = confidential()
 
-import { issue, verify, match, JSON36 } from "../src"
+import { issue, verify, match } from "../src"
+import { JSON36 } from "../src/helpers"
 import { store, lookup } from "../src/client"
 
 import api from "./api"
 import authorization from "./authorization"
 
-fetch = ( request ) ->
-  # TODO possibly switch back to target using helper 
-  #      to derive target from resource?
-  { resource } = request
-  switch resource.name
-    when "description"
-      content: api
-    when "workspace"
-      content: address: "acme"
-    when "workspaces"
-      content: [ { address: "acme" }, { address: "evilcorp" }]
-    when "account"
-      content: address: "alice"
-    when "workspace-subscriptions"
-      content: subscription: "active"
-    else
-      throw new Error "oops that's not a pretend resource!"
+globalThis.Sky =
+  fetch: ( request ) ->
+    # TODO possibly switch back to target using helper 
+    #      to derive target from resource?
+    { resource } = request
+    switch resource.name
+      when "description"
+        content: api
+      when "workspace"
+        content: address: "acme"
+      when "workspaces"
+        content: [ { address: "acme" }, { address: "evilcorp" }]
+      when "account"
+        content: address: "alice"
+      when "workspace-subscriptions"
+        content: subscription: "active"
+      else
+        throw new Error "oops that's not a pretend resource!"
 
 do ->
 
@@ -84,7 +86,7 @@ do ->
             assert.deepEqual authorization.grants, _authorization.grants
 
           test "rune should fail to verify with altered authorization", ->
-            _authorization.grants[0].resources.push "workspaces"
+            _authorization.grants[0].resources.include.push "workspaces"
             _rune = JSON36.encode [ _authorization, hash ]
             assert !( verify { rune: _rune, secret, nonce } )
         ]
@@ -96,11 +98,11 @@ do ->
               domain: "foo.dashkite.io"
               resource:  
                 name: "workspace"
-                bindings: workspace: "acme"
+                bindings:
+                  workspace:
+                    "acme"
               method: "get"
-            assert ( request = await match { fetch, request, authorization } )?
-            assert.equal "workspace", request.resource.name
-            assert.equal "acme", request.resource.bindings.workspace
+            assert await match { request, authorization }
 
           test "wildcard-match", ->
             request =
@@ -111,9 +113,7 @@ do ->
                   workspace: "acme"
                   product: "graphene"
               method: "get"
-            assert ( request = await match { fetch, request, authorization } )?
-            assert.equal "workspace-subscriptions", request.resource.name
-            assert.equal "graphene", request.resource.bindings.product
+            assert await match { request, authorization }
 
           test "wildcard-failure", ->
             request =
@@ -124,7 +124,7 @@ do ->
                   workspace: "evil"
                   product: "graphene"
               method: "get"
-            assert !( await match { fetch, request, authorization } )?
+            assert !( await match { request, authorization })
           
           test "match failure", ->
             request =
@@ -133,7 +133,7 @@ do ->
                 name: "workspace"
                 bindings: workspace: "evil"
               method: "get"
-            assert !( await match { fetch, request, authorization  })?
+            assert !( await match { request, authorization  })
         ]
       ]
 

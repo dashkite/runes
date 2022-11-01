@@ -7,7 +7,7 @@ identity: alice@acme.org
 
 resolvers:
 
-  - name: account
+  account:
     action:
       name: request
       value: 
@@ -16,7 +16,7 @@ resolvers:
           bindings:
             email: alice@acme.org
 
-  - name: workspaces
+  workspaces:
     action:
       name: request
       value:
@@ -46,16 +46,18 @@ grants:
       account: ${ account.address }
 
   - resources:
-      include: workspace
+      include: 
+        - workspace
     methods:
       - get
     resolvers:
-      - workspace
+      - workspaces
     bindings:
       workspace: ${ workspaces[*].address }
 
   - resources:
-      include: workspace-subscriptions
+      include: 
+        - workspace-subscriptions
     methods:
       - get
     resolvers:
