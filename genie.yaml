@@ -30,4 +30,7 @@ presets:
             - "{src,test}/**/*.yaml"
       browser: *yaml
 
+  schema:
+    glob: "src/**/*.schema.yaml"
+
 sky: {}
