@@ -28,27 +28,7 @@ $defs:
         type: integer
       nanoseconds:
         type: integer
-    oneOf:
-      - required:
-        - years
-      - required:
-        - months
-      - required:
-        - weeks
-      - required:
-        - days
-      - required:
-        - hours
-      - required:
-        - minutes
-      - required:
-        - seconds
-      - required:
-        - milliseconds
-      - required:
-        - microseconds
-      - required:
-        - nanoseconds
+    minProperties: 1
 
   action:
     title: Action
