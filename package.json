@@ -10,6 +10,10 @@
     "./*": {
       "browser": "./build/browser/src/*.js",
       "node": "./build/node/src/*.js"
+    },
+    "./schema": {
+      "browser": "./build/browser/src/schema.js",
+      "node": "./build/node/src/schema.js"
     }
   },
   "scripts": {

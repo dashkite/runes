@@ -120,7 +120,7 @@ properties:
     description: >-
       The domain the rune description is associated with.
     type: string
-    pattern: '^([a-z]\.){2,}\.[a-z]$'
+    pattern: '^([a-z0-9\-]+\.[a-z0-9\-]+){1,}\.[a-z]+$'
   expires:
     $ref: '#/$defs/expires'
   identity:

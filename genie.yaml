@@ -31,6 +31,10 @@ presets:
       browser: *yaml
 
   schema:
-    glob: "src/**/*.schema.yaml"
+    glob: "src/**/schema.yaml"
 
-sky: {}
+sky:
+  schema:
+    type: rune
+    glob: "test/**/authorization.yaml"
+    auto: false
