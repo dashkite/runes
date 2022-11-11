@@ -78,7 +78,20 @@ $defs:
       resources:
         description: >-
           A list of resources the grant applies to.
-        type: array
+        type: [ object, array ]
+        properties:
+          include:
+            type: array
+            items:
+              type: string
+              pattern: '^(([A-Za-z0-9\-])([ ]{0,1}))+$'
+          exclude:
+            type: array
+            items:
+              type: string
+              pattern: '^(([A-Za-z0-9\-])([ ]{0,1}))+$'
+        maxProperties: 1
+        additionalProperties: false
         items:
           type: string
           pattern: '^(([A-Za-z0-9\-])([ ]{0,1}))+$'
