@@ -10,17 +10,19 @@ find = ( grants, request ) ->
       ( Actions.method grant.methods, { request })
 
 resolve = ( resolvers, context ) ->
-  Rule.resolve context: resolvers, context
+  Rule.resolve { context: resolvers }, context
 
 resolvers = ( authorization, grant ) ->
-  for resolver in grant.resolvers
-    if ( value = authorization.resolvers[ resolver ] )?
-      {
-        name: resolver
-        value...
-      }
-    else
-      throw new Error "runes: missing resolver [ #{ resolver } ]"
+  if grant.resolvers?
+    for resolver in grant.resolvers
+      if ( value = authorization.resolvers[ resolver ] )?
+        {
+          name: resolver
+          value...
+        }
+      else
+        throw new Error "runes: missing resolver [ #{ resolver } ]"
+  else []
 
 bindings = ( bindings, context ) ->
   Actions.bindings bindings, context
@@ -29,7 +31,7 @@ match = ( context ) ->
   { request, authorization } = context
   if request.domain == authorization.domain
     if ( grant = find authorization.grants, request )?
-      bindings grant.bindings,
+      bindings ( grant.bindings ? {} ),
         await resolve ( resolvers authorization, grant ), context
     else false
   else false
