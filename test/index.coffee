@@ -10,7 +10,6 @@ Confidential = confidential()
 
 import { issue, verify, match } from "../src"
 import { JSON36 } from "../src/helpers"
-import { store, lookup } from "../src/client"
 
 import api from "./api"
 import authorization from "./authorization"
@@ -136,30 +135,6 @@ do ->
             assert !( await match { request, authorization  })
         ]
       ]
-
-    test "client", [
-
-      test "store", ->
-        assert.equal null, store { rune, nonce }
-
-      test "lookup", ->
-        result = lookup
-          identity: "alice@acme.org"
-          domain: "foo.dashkite.io"
-          resource: "workspace"
-          method: "get"
-        assert result?
-        assert.equal result.rune, rune
-        assert.equal result.nonce, nonce
-
-      test "lookup failure", ->
-        result = lookup
-          identity: "bob@acme.org"
-          domain: "foo.dashkite.io"
-          resource: "workspace"
-          method: "get"
-        assert !result?
-    ]
 
         
   ]
