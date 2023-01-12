@@ -9,9 +9,10 @@ import { confidential } from "panda-confidential"
 Confidential = confidential()
 
 import { issue, verify, match, bind } from "../src"
-import { JSON36 } from "../src/helpers"
+import { encode, decode } from "../src/helpers"
 
 import api from "./api"
+import handlers from "./handlers"
 import authorization from "./authorization"
 import bound from "./bound"
 
@@ -20,19 +21,12 @@ globalThis.Sky =
     # TODO possibly switch back to target using helper 
     #      to derive target from resource?
     { resource } = request
-    switch resource.name
-      when "description"
+    if resource.name == "description"
         content: api
-      when "workspace"
-        content: address: "acme"
-      when "workspaces"
-        content: [ { address: "acme" }, { address: "evilcorp" }]
-      when "account"
-        content: address: "alice"
-      when "workspace-subscriptions"
-        content: subscription: "active"
-      else
-        throw new Error "oops that's not a pretend resource!"
+    else if ( response = handlers[ resource.name ] )?
+      response
+    else
+      throw new Error "oops that's not a pretend resource!"
 
 do ->
 
@@ -47,7 +41,7 @@ do ->
     await Confidential.randomBytes 16
 
   { rune, nonce } = await issue { authorization, secret }
-  [ _authorization, hash ] = JSON36.decode rune
+  [ _authorization, hash ] = decode rune
 
   print await test "@dashkite/runes",  [
 
@@ -84,7 +78,7 @@ do ->
 
       test "rune should fail to verify with altered authorization", ->
         _authorization.grants[0].resources.push "workspaces"
-        _rune = JSON36.encode [ _authorization, hash ]
+        _rune = encode [ _authorization, hash ]
         assert !( verify { rune: _rune, secret, nonce } )
     ]
     

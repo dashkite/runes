@@ -1,26 +1,29 @@
+import * as Fn from "@dashkite/joy/function"
+import * as Type from "@dashkite/joy/type"
+import { generic } from "@dashkite/joy/generic"
 import { confidential } from "panda-confidential"
 import { Temporal } from "@js-temporal/polyfill"
 
 Confidential = confidential()
 
-JSON36 =
-
-  nonce: ->
+Nonce = 
+  generate: ->
     Confidential.convert
       from: "bytes"
       to: "base36"
       await Confidential.randomBytes 4
-  encode: (value) ->
-    Confidential.convert
-      from: "utf8"
-      to: "base36"
-      JSON.stringify value
-  
-  decode: (value) ->
-    JSON.parse Confidential.convert
-      from: "base36"
-      to: "utf8"
-      value
+
+encode = (value) ->
+  Confidential.convert
+    from: "utf8"
+    to: "base36"
+    JSON.stringify value
+
+decode = (value) ->
+  JSON.parse Confidential.convert
+    from: "base36"
+    to: "utf8"
+    value
 
 When =
   
@@ -33,5 +36,12 @@ When =
 
   add: ( t, d ) -> t.add d
 
+  timestamp: generic name: "When.timestamp"
 
-export { JSON36, Confidential, When }
+generic When.timestamp, Type.isObject, ( expires ) ->
+  When.toISOString When.now().add expires
+
+generic When.timestamp, Type.isString, Fn.identity
+
+
+export { encode, decode, Nonce, Confidential, When }
