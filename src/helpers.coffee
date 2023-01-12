@@ -3,22 +3,30 @@ import { Temporal } from "@js-temporal/polyfill"
 
 Confidential = confidential()
 
-JSON36 =
+JSON36 = 
 
   nonce: ->
     Confidential.convert
       from: "bytes"
       to: "base36"
       await Confidential.randomBytes 4
+
+JSON64 =
+
+  nonce: ->
+    Confidential.convert
+      from: "bytes"
+      to: "base64"
+      await Confidential.randomBytes 4
   encode: (value) ->
     Confidential.convert
       from: "utf8"
-      to: "base36"
+      to: "base64"
       JSON.stringify value
   
   decode: (value) ->
     JSON.parse Confidential.convert
-      from: "base36"
+      from: "base64"
       to: "utf8"
       value
 
@@ -34,4 +42,4 @@ When =
   add: ( t, d ) -> t.add d
 
 
-export { JSON36, Confidential, When }
+export { JSON64, JSON36, Confidential, When }

@@ -2,13 +2,14 @@ import * as Fn from "@dashkite/joy/function"
 import * as Arr from "@dashkite/joy/array"
 import * as It from "@dashkite/joy/iterable"
 import * as Type from "@dashkite/joy/type"
+import * as Val from "@dashkite/joy/value"
 import { Actions } from "@dashkite/enchant/actions"
 import { Action } from "@dashkite/enchant/action"
 import { Expression } from "@dashkite/enchant/expression"
 import { Rule } from "@dashkite/enchant/rules"
 
-find = ( grants, request ) ->
-  grants.find ( grant ) ->
+filter = ( grants, request ) ->
+  grants.filter ( grant ) ->
     ( Actions.resource grant.resources, { request }) &&
       ( Actions.method grant.methods, { request })
 
@@ -46,20 +47,20 @@ bindings = ( bindings, context ) ->
 match = ( context ) ->
   { request, authorization } = context
   if request.domain == authorization.domain
-    if ( grant = find authorization.grants, request )?
-      context = await resolve ( resolvers authorization, grant, context ), context
-      if grant.any?
-        { from, each } = grant.any
-        from = Expression.apply from, context
-        if Type.isArray from
-          from.every ( item ) ->
-            bindings grant.any.bindings, 
-              { context..., [ each ]: item }
+    if ( grants = filter ( Val.clone authorization.grants ), request )?
+      for grant in grants
+        context = await resolve ( resolvers authorization, grant, context ), context
+        if grant.any?
+          { from, each } = grant.any
+          from = Expression.apply from, context
+          if Type.isArray from
+            matched = from.every ( item ) ->
+              await bindings grant.any.bindings, 
+                { context..., [ each ]: item }
+            if matched then return true
         else
-          false
-      else
-        bindings ( grant.bindings ? {} ), context
-    else false
-  else false
+          matched = await bindings ( grant.bindings ? {} ), context
+          if matched then return true
+  return false
   
 export { match }

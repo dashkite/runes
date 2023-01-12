@@ -1,0 +1,172 @@
+domain: workspaces.dashkite.io
+
+expires:
+  days: 30
+
+identity: ${ email }
+
+resolvers:
+
+  account:
+    action:
+      name: request
+      value:
+        domain: workspaces.dashkite.io
+        method: get
+        resource:
+          name: account-query
+          bindings:
+            email: ${ email }
+
+  workspaces:
+    requires: 
+      - account
+    action:
+      name: request
+      value:
+        domain: workspaces.dashkite.io
+        method: get
+        resource:
+          name: account-workspaces
+          bindings: 
+            account: \${ account.address }
+
+  workspace-accounts:
+    requires:
+      - workspaces
+    action:
+      name: map
+      value:
+        from: \${ workspaces }
+        each: workspace
+        action:
+          name: request
+          value:  
+            domain: workspaces.dashkite.io
+            method: get
+            resource:
+              name: workspace-accounts
+              bindings: 
+                workspace: \\\${ workspace }
+
+  admin-level-workspaces:
+    requires: 
+      - account
+    action:
+      name: request
+      value:
+        domain: workspaces.dashkite.io
+        method: get
+        resource:
+          name: account-workspaces
+          bindings: 
+            account: \${ account.address }
+            role: administrator
+  
+  invites:
+    requires:
+      - account
+    action:
+      name: request
+      value:  
+        domain: workspaces.dashkite.io
+        method: get
+        resource:
+          name: account-workspace-invites
+          bindings: 
+            account: \${ account.address }
+
+grants:
+  - resources: [ account-query ]
+    bindings:
+      email: ${ email }
+    methods: [ get ]
+  - resources: [ account-workspaces, account, billing, account-workspace-invites, checkout ]
+    resolvers: [ account ]
+    bindings:
+      account: \${ account.address }
+    methods: [ get, put, delete, post ]
+  - resources: [ account ]
+    resolvers: [ workspace-accounts ]
+    any:
+      from: \${ workspace-accounts[*][*].accounts[*].address }
+      each: account
+      bindings:
+        account: \${ account }
+    methods: [ get ]
+  - resources: [ subscription, subscriptions, workspace-accounts, workspace-account, workspace-invite, workspace-invites ]
+    resolvers: [ workspaces ]
+    any:
+      from: \${ workspaces }
+      each: workspace
+      bindings:
+        workspace: \${ workspace }
+    methods: [ get ]
+  - resources: [ subscription, workspace-account, workspace-invite, workspace, workspace-invites, trial-add ]
+    resolvers: [ admin-level-workspaces ]
+    any:
+      from: \${ admin-level-workspaces }
+      each: workspace
+      bindings:
+        workspace: \${ workspace }
+    methods: [ put, delete, post ]
+  - resources: [ subscription-metadata ]
+    resolvers: [ workspaces ]
+    any:
+      from: \${ workspaces }
+      each: workspace
+      bindings:
+        workspace: \${ workspace }
+    methods: [ get, put, delete ]
+  - resources: [ subscriptions ]
+    resolvers: [ admin-level-workspaces, account ]
+    any:
+      from: \${ admin-level-workspaces }
+      each: workspace
+      bindings:
+        workspace: \${ workspace }
+        account: \${ account.address }
+    methods: [ post ]
+  - resources: [ workspace ]
+    resolvers: [ workspaces ]
+    any:
+      from: \${ workspaces }
+      each: workspace
+      bindings:
+        workspace: \${ workspace }
+    methods: [ get ]
+  - resources: [ workspace ]
+    resolvers: [ invites ]
+    any:
+      from: \${ invites }
+      each: workspace
+      bindings:
+        workspace: \${ workspace }
+    methods: [ get ]
+  - resources: [ workspace-invite-accept ]
+    resolvers: [ invites, account ]
+    any:
+      from: \${ invites }
+      each: workspace
+      bindings:
+        workspace: \${ workspace }
+        account: \${ account.address }
+    methods: [ post ]
+  - resources: [ account-workspace-leave ]
+    resolvers: [ workspaces, account ]
+    any:
+      from: \${ workspaces }
+      each: workspace
+      bindings:
+        workspace: \${ workspace }
+        account: \${ account.address }
+    methods: [ post ]
+  - resources: [ workspace-invite ]
+    resolvers: [ invites ]
+    any:
+      from: \${ invites }
+      each: workspace
+      bindings:
+        workspace: \${ workspace }
+        email: ${ email }
+    methods: [ get, delete ]

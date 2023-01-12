@@ -1,4 +1,4 @@
-import { When, Confidential, JSON36 } from "./helpers"
+import { When, Confidential, JSON64, JSON36 } from "./helpers"
 
 canonicalize = ( authorization, nonce, secret ) ->
   Confidential.Message.from "utf8",
@@ -11,7 +11,7 @@ mac = ( message ) ->
     ( Confidential.hash message ).hash[0..31]
 
 make = ( authorization, secret, nonce ) ->
-  rune = JSON36.encode [
+  rune = JSON64.encode [
     authorization
     mac canonicalize authorization, 
       nonce, 
