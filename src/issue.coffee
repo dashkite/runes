@@ -1,4 +1,4 @@
-import { When, Confidential, JSON64, JSON36 } from "./helpers"
+import { When, Confidential, encode, Nonce } from "./helpers"
 
 canonicalize = ( authorization, nonce, secret ) ->
   Confidential.Message.from "utf8",
@@ -11,7 +11,7 @@ mac = ( message ) ->
     ( Confidential.hash message ).hash[0..31]
 
 make = ( authorization, secret, nonce ) ->
-  rune = JSON64.encode [
+  rune = encode [
     authorization
     mac canonicalize authorization, 
       nonce, 
@@ -22,7 +22,7 @@ make = ( authorization, secret, nonce ) ->
 issue = ({ authorization, secret }) ->
   make {
     authorization...
-    expires: When.toISOString When.now().add authorization.expires
-  }, secret, await JSON36.nonce()
+    expires: When.timestamp authorization.expires
+  }, secret, await Nonce.generate()
 
 export { issue, make }

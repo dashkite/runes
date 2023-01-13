@@ -1,0 +1,16 @@
+workspace:
+  content:
+    address: acme
+
+workspaces:
+  content:
+    - address: acme
+    - address: evilcorp
+
+account:
+  content:
+    address: alice
+
+workspace-subscriptions:
+  content:
+    subscription: active

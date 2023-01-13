@@ -10,31 +10,26 @@ import { confidential } from "panda-confidential"
 
 Confidential = confidential()
 
-import { issue, verify, match } from "../src"
-import { JSON64 } from "../src/helpers"
+import { issue, verify, match, bind } from "../src"
+import { encode, decode } from "../src/helpers"
 
 import api from "./api"
+import handlers from "./handlers"
 import authorization from "./authorization"
 import benchmark from "./benchmark"
+import bound from "./bound"
 
 globalThis.Sky =
   fetch: ( request ) ->
     # TODO possibly switch back to target using helper 
     #      to derive target from resource?
     { resource } = request
-    switch resource.name
-      when "description"
+    if resource.name == "description"
         content: api
-      when "workspace"
-        content: address: "acme"
-      when "workspaces"
-        content: [ { address: "acme" }, { address: "evilcorp" }]
-      when "account"
-        content: address: "alice"
-      when "workspace-subscriptions"
-        content: subscription: "active"
-      else
-        throw new Error "oops that's not a pretend resource!"
+    else if ( response = handlers[ resource.name ] )?
+      response
+    else
+      throw new Error "oops that's not a pretend resource!"
 
 do ->
 
@@ -49,11 +44,10 @@ do ->
     await Confidential.randomBytes 16
 
   { rune, nonce } = await issue { authorization, secret }
-
-  [ _authorization, hash ] = JSON64.decode rune
+  [ _authorization, hash ] = decode rune
 
   print await test "@dashkite/runes",  [
-    
+
     test "issuance", [
 
       test "hash should always be 32 bytes", ->
@@ -81,12 +75,13 @@ do ->
         # the domain and grant instead
         # we can check expires too if we make temporal helpers
         # into a separate module, importable
+    
         assert.equal authorization.domain, _authorization.domain
         assert.deepEqual authorization.grants, _authorization.grants
 
       test "rune should fail to verify with altered authorization", ->
         _authorization.grants[0].resources.push "workspaces"
-        _rune = JSON64.encode [ _authorization, hash ]
+        _rune = encode [ _authorization, hash ]
         assert !( verify { rune: _rune, secret, nonce } )
     ]
     
@@ -123,6 +118,8 @@ do ->
               workspace: "evil"
               product: "graphene"
           method: "get"
+        console.log "wildcard-failure", 
+          await match { request, authorization }
         assert !( await match { request, authorization })
       
       test "match failure", ->
@@ -135,6 +132,22 @@ do ->
         assert !( await match { request, authorization  })
     ]
 
+    test "bind", [
+
+      test "match", ->
+        request =
+          domain: "foo.dashkite.io"
+          resource:  
+            name: "workspace"
+            bindings:
+              workspace:
+                "acme"
+          method: "get"
+        result = await bind authorization, { request }
+        assert.deepEqual result, bound
+
+    ]
+    
     do ({ rune, nonce } = {}) ->
       test "benchmark", [
 
@@ -149,7 +162,4 @@ do ->
           console.log "VERIFICATION DURATION", ms, "ms"
       ]
 
-
-
-        
   ]

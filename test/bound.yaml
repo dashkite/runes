@@ -5,26 +5,6 @@ expires:
 
 identity: alice@acme.org
 
-resolvers:
-
-  account:
-    action:
-      name: request
-      value: 
-        resource: 
-          name: account
-          bindings:
-            email: alice@acme.org
-
-  workspaces:
-    action:
-      name: request
-      value:
-        resource:
-          name: workspaces
-          bindings:
-            account: ${ account.address }
-
 grants:
 
   - resources:
@@ -38,19 +18,15 @@ grants:
       - workspaces
     methods:
       - get
-    resolvers:
-      - account
     bindings:
-      account: ${ account.address }
+      account: alice
 
   - resources:
       - workspace
     methods:
       - get
-    resolvers:
-      - workspaces
     any:
-      from: ${ workspaces[*].address }
+      from: [ acme, evilcorp ]
       each: workspace
       bindings:
         workspace: ${ workspace }
@@ -59,10 +35,8 @@ grants:
       - workspace-subscriptions
     methods:
       - get
-    resolvers:
-      - workspaces
     any:
-      from: ${ workspaces[*].address }
+      from: [ acme, evilcorp ]
       each: workspace
       bindings:
         workspace: ${ workspace }

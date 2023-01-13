@@ -8,59 +8,89 @@ import { Action } from "@dashkite/enchant/action"
 import { Expression } from "@dashkite/enchant/expression"
 import { Rule } from "@dashkite/enchant/rules"
 
-filter = ( grants, request ) ->
-  grants.filter ( grant ) ->
-    ( Actions.resource grant.resources, { request }) &&
-      ( Actions.method grant.methods, { request })
+Grants =
+  filter: ( grants, request ) ->
+    grants
+      .filter ( grant ) ->
+        ( Actions.resource grant.resources, { request }) &&
+          ( Actions.method grant.methods, { request })
+      
+Resolvers =
 
-resolve = ( resolvers, context ) ->
-  Rule.resolve { context: resolvers }, context
+  dictionaryToList: ( dictionary ) ->
+    Object
+      .entries dictionary
+      .map ([ name, value ]) -> { name, value... }
 
-buildResolverList = ({ names, resolvers, list }, context ) ->
-  for name in names
-    if ( value = resolvers[ name ] )?
-      if value.requires?
-        buildResolverList { names: value.requires, resolvers, list }, context
-        delete value.requires
-      list.push { name, value... }
-    else
-      throw new Error "runes: missing resolver [ #{ name } ]"
+  expand: ( names, resolvers ) ->
+    result = {}
+    for name in names
+      resolver = resolvers[ name ]
+      result[ name ] = resolver
+      if resolver.requires?
+        result = { 
+          result...
+          ( Resolvers.expand resolver.requires, resolvers )...
+        }
+    Resolvers.dictionaryToList result
 
+  apply: ( resolvers, context ) ->
+    Rule.resolve { context: resolvers }, context
 
-resolvers = ( authorization, grant, context ) ->
-  list = []
-  if grant.resolvers?
-    buildResolverList(
-      { 
-        names: grant.resolvers
-        resolvers: authorization.resolvers
-        list 
-      }, context)
-  list
+Bindings =
 
-bindings = ( bindings, context ) ->
-  Action.apply 
-    name: "bindings"
-    value: bindings
-    context
+  match: ( target, context ) ->
+    if target?
+      { request } = context
+      { resource } = request
+      { bindings } = resource
+      
+      Object.entries ( Expression.apply target, context )
+        .every ([ key, value ]) ->
+          if bindings[key]? && value?
+            Val.equal bindings[ key ], value
+          else
+            false
+    else true
 
 match = ( context ) ->
+  context = { context... }
   { request, authorization } = context
   if request.domain == authorization.domain
-    if ( grants = filter ( Val.clone authorization.grants ), request )?
-      for grant in grants
-        context = await resolve ( resolvers authorization, grant, context ), context
-        if grant.any?
-          { from, each } = grant.any
-          from = Expression.apply from, context
-          if Type.isArray from
-            matched = from.every ( item ) ->
-              await bindings grant.any.bindings, 
-                { context..., [ each ]: item }
-            if matched then return true
-        else
-          matched = await bindings ( grant.bindings ? {} ), context
-          if matched then return true
-  return false
-  
-export { match }
+    grants = Grants.filter ( authorization.grants ), request
+    for grant in grants
+      if grant.resolvers?
+        resolvers = Resolvers.expand grant.resolvers, authorization.resolvers
+        await Resolvers.apply resolvers, context
+      if grant.any?
+        matched = ( Expression.apply grant.any.from, context )
+          .some ( value ) ->
+            Bindings.match grant.any.bindings, 
+              { context..., [ grant.any.each ]: value }
+        if matched then return true
+      else
+        matched = Bindings.match grants.bindings, context
+        if matched then return true
+    return false
+
+bind = ( authorization, context ) ->
+
+  bound = Val.clone authorization
+  context = { context... }
+
+  if authorization.resolvers?
+    resolvers = Resolvers.dictionaryToList authorization.resolvers
+    await Resolvers.apply resolvers, context
+    delete bound.resolvers 
+
+  { grants } = bound
+  for grant in grants
+    if grant.resolvers?
+      delete grant.resolvers
+    if grant.any?
+      grant.any.from = Expression.apply grant.any.from, context 
+    else
+      grant.bindings = Expression.apply grant.bindings, context
+  bound
+
+export { match, bind }
