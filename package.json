@@ -4,11 +4,9 @@
   "description": "Authenticated authorization for HTTP",
   "exports": {
     ".": {
-      "browser": "./build/browser/src/index.js",
       "node": "./build/node/src/index.js"
     },
     "./schema": {
-      "browser": "./build/browser/src/schema.js",
       "node": "./build/node/src/schema.js"
     }
   },

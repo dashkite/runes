@@ -3,7 +3,7 @@ import { test, success } from "@dashkite/amen"
 import print from "@dashkite/amen-console"
 import * as Time from "@dashkite/joy/time"
 import { convert } from "@dashkite/bake"
-import {sleep} from "panda-parchment"
+import { sleep } from "@dashkite/joy/time"
 import "./local-storage"
 
 import { confidential } from "panda-confidential"
