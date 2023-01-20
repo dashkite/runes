@@ -29,14 +29,14 @@
     "@dashkite/assert": "^0.1.4",
     "@dashkite/bake": "^0.0.6",
     "@dashkite/genie": "^0.5.11",
-    "@dashkite/genie-presets": "^0.6.0",
-    "@dashkite/sky-presets": "file:../sky-presets",
+    "@dashkite/genie-presets": "^0.6.2",
+    "@dashkite/polaris": "link:../polaris",
+    "@dashkite/sky-presets": "link:../sky-presets",
     "panda-parchment": "^6.0.4"
   },
   "dependencies": {
-    "@dashkite/enchant": "file:../enchant",
+    "@dashkite/enchant": "link:../enchant",
     "@dashkite/joy": "^0.3.16",
-    "@dashkite/polaris": "file:../polaris",
     "@js-temporal/polyfill": "^0.4.3",
     "panda-confidential": "^3.1.2"
   }
