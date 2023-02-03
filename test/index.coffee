@@ -1,165 +1,79 @@
 import assert from "@dashkite/assert"
 import { test, success } from "@dashkite/amen"
 import print from "@dashkite/amen-console"
-import * as Time from "@dashkite/joy/time"
-import { convert } from "@dashkite/bake"
-import { sleep } from "@dashkite/joy/time"
+
+import * as Fn from "@dashkite/joy/function"
+import { confidential } from "panda-confidential"
+
 import "./local-storage"
 
-import { confidential } from "panda-confidential"
+import * as API from "./generators/apis"
+import * as Rune from "./generators/runes"
+import * as Scenarios from "./generators/scenarios"
+
+import { verify, match } from "../src"
 
 Confidential = confidential()
 
-import { issue, verify, match, bind } from "../src"
-import { encode, decode } from "../src/helpers"
-
-import api from "./api"
-import handlers from "./handlers"
-import authorization from "./authorization"
-import benchmark from "./benchmark"
-import bound from "./bound"
-
-globalThis.Sky =
-  fetch: ( request ) ->
-    # TODO possibly switch back to target using helper 
-    #      to derive target from resource?
-    { resource } = request
-    if resource.name == "description"
-        content: api
-    else if ( response = handlers[ resource.name ] )?
-      response
-    else
-      throw new Error "oops that's not a pretend resource!"
-
 do ->
 
-  secret = Confidential.convert
-    from: "bytes"
-    to: "base64"
-    await Confidential.randomBytes 16
+  Secrets =
 
-  forged = Confidential.convert
-    from: "bytes"
-    to: "base64"
-    await Confidential.randomBytes 16
-
-  { rune, nonce } = await issue { authorization, secret }
-  [ _authorization, hash ] = decode rune
-
-  print await test "@dashkite/runes",  [
-
-    test "issuance", [
-
-      test "hash should always be 32 bytes", ->
-        assert.equal 32,
-          Confidential.convert
-            from: "base64"
-            to: "bytes"
-            hash
-          .length
-    ]
-
-    test "verification", [
-
-      test "rune should verify with correct secret and nonce", ->
-        assert verify { rune, secret, nonce }
-      
-      test "rune should fail to verify with forged secret", ->
-        assert !( verify { rune, secret: forged, nonce } )
-
-      test "rune should fail when expired"
-
-      test "authorization should be unchanged", ->
-        # TODO check expires as well
-        # expires will have converted to an ISO string, so we check
-        # the domain and grant instead
-        # we can check expires too if we make temporal helpers
-        # into a separate module, importable
+    guardian: Confidential.convert
+      from: "bytes"
+      to: "base64"
+      await Confidential.randomBytes 16
     
-        assert.equal authorization.domain, _authorization.domain
-        assert.deepEqual authorization.grants, _authorization.grants
+    forged:  Confidential.convert
+      from: "bytes"
+      to: "base64"
+      await Confidential.randomBytes 16
 
-      test "rune should fail to verify with altered authorization", ->
-        _authorization.grants[0].resources.push "workspaces"
-        _rune = encode [ _authorization, hash ]
-        assert !( verify { rune: _rune, secret, nonce } )
-    ]
-    
-    test "match", [
+  # print await test "@dashkite/runes"
 
-      test "match", ->
-        request =
-          domain: "foo.dashkite.io"
-          resource:  
-            name: "workspace"
-            bindings:
-              workspace:
-                "acme"
-          method: "get"
-        assert await match { request, authorization }
-
-      test "wildcard-match", ->
-        request =
-          domain: "foo.dashkite.io"
-          resource:  
-            name: "workspace-subscriptions"
-            bindings: 
-              workspace: "acme"
-              product: "graphene"
-          method: "get"
-        assert await match { request, authorization }
-
-      test "wildcard-failure", ->
-        request =
-          domain: "foo.dashkite.io"
-          resource:  
-            name: "workspace-subscriptions"
-            bindings: 
-              workspace: "evil"
-              product: "graphene"
-          method: "get"
-        console.log "wildcard-failure", 
-          await match { request, authorization }
-        assert !( await match { request, authorization })
-      
-      test "match failure", ->
-        request =
-          domain: "foo.dashkite.io"
-          resource:
-            name: "workspace"
-            bindings: workspace: "evil"
-          method: "get"
-        assert !( await match { request, authorization  })
-    ]
-
-    test "bind", [
-
-      test "match", ->
-        request =
-          domain: "foo.dashkite.io"
-          resource:  
-            name: "workspace"
-            bindings:
-              workspace:
-                "acme"
-          method: "get"
-        result = await bind authorization, { request }
-        assert.deepEqual result, bound
-
-    ]
-    
-    do ({ rune, nonce } = {}) ->
-      test "benchmark", [
-
-        await test "issuance", ->
-          ms = await Time.benchmark ->
-            { rune, nonce } = await issue { authorization: benchmark, secret }
-          console.log "ISSUANCE DURATION", ms, "ms"
-        
-        test "verification", ->
-          ms = Time.benchmark ->
-            verify { rune, secret, nonce }
-          console.log "VERIFICATION DURATION", ms, "ms"
+  api = do API.make Fn.pipe [
+    API.resource "foo", Fn.pipe [
+      API.template "/foo/{bar}"
+      API.method "get", Fn.pipe [
+        API.ok
+        API.json
       ]
-
+    ]
+    API.resource "bar", Fn.pipe [
+      API.template "/bar/{foo}"
+      API.method "get", Fn.pipe [
+        API.ok
+        API.json
+      ]
+    ]
   ]
+
+  authorization = do Rune.make Fn.pipe [
+    Rune.domain "acme.org"
+    Rune.expires days: 30
+    Rune.grant Fn.pipe [
+      Rune.resources API.match /^foo/, api
+      Rune.methods [ "get" ]
+      Rune.bindings bar: "baz"
+    ]
+  ]
+
+  rune = await Rune.seal Secrets.guardian, authorization
+
+  scenarios = do Scenarios.make Fn.pipe [
+    Scenarios.scenario "valid binding", Fn.pipe [
+      Scenarios.action "verify"
+      Scenarios.action "match"
+      Scenarios.authorization authorization
+      Scenarios.secret Secrets.guardian
+      Scenarios.rune rune
+      Scenarios.request
+        domain: "acme.org"
+        resource:
+          name: "foo"
+          bindings: bar: "baz"
+        method: "get"
+    ]
+  ]
+
+  print await Scenarios.run scenarios
