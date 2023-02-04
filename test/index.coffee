@@ -50,7 +50,7 @@ do ->
 
   Scenario =
 
-    make: ({ aspect, valid }) ->
+    make: ({ aspect, valid, benchmark }) ->
 
       name = if aspect == "forged"
         "forged request"
@@ -76,6 +76,14 @@ do ->
         Rune.bindings bar: "baz"
       ]
 
+      if benchmark?
+        for i in [1..100]
+          Generators.rune.push Rune.grant Fn.pipe [
+            Rune.resources API.match /^foo/, api
+            Rune.methods [ "get", "put", "delete", "post" ]
+            Rune.bindings bar: "baz"
+          ]
+
       if aspect != "forged"
         Generators.rune.push Rune.seal Secrets.guardian
       else
@@ -92,6 +100,9 @@ do ->
         Generators.scenario.push Scenarios.action "match"
       else if !( aspect in [ "expiry", "forged" ])
         Generators.scenario.push Scenarios.fail "match" 
+
+      if benchmark?
+        Generators.scenario.push Scenarios.benchmark benchmark
 
       # Generators.scenario.push Scenarios.authorization authorization
       Generators.scenario.push Scenarios.secret Secrets.guardian
@@ -133,7 +144,8 @@ do ->
 
   _scenarios.push await Scenario.make { aspect: "forged", valid: false }
   
-  # console.log _scenarios
+  _scenarios.push await Scenario.make { valid: true, benchmark: 100 }
+
   scenarios = do Scenarios.make Fn.pipe _scenarios
 
   print await Scenarios.run scenarios
