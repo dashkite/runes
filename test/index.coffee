@@ -95,7 +95,7 @@ do ->
         when "forged" then "forged rune"
         when "tamper" then "tampered authority"
         when "benchmark" then "benchmark"
-        when "malformed rune", "malformed authority" then aspect
+        when "malformed rune", "malformed authorization" then aspect
         else
           if valid
             "valid #{ aspect ? 'request' }"
