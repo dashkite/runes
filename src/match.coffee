@@ -1,4 +1,6 @@
 import * as Fn from "@dashkite/joy/function"
+import { generic } from "@dashkite/joy/generic"
+import * as Pred from "@dashkite/joy/predicate"
 import * as Arr from "@dashkite/joy/array"
 import * as It from "@dashkite/joy/iterable"
 import * as Type from "@dashkite/joy/type"
@@ -7,6 +9,20 @@ import { Actions } from "@dashkite/enchant/actions"
 import { Action } from "@dashkite/enchant/action"
 import { Expression } from "@dashkite/enchant/expression"
 import { Rule } from "@dashkite/enchant/rules"
+
+# TODO [ticketed] we need a variant of this in Joy
+
+any = generic name: "any"
+
+generic any, Type.isIterable, Type.isAsyncFunction, ( it, p ) ->
+  for i in it
+    return true if await p i   
+  false
+
+generic any, Type.isIterable, Type.isRegularFunction, ( it, p ) ->
+  for i in it
+    return true if p i
+  false
 
 Grants =
   filter: ( grants, request ) ->
@@ -54,24 +70,19 @@ Bindings =
     else true
 
 match = ( context ) ->
-  context = { context... }
+  context = structuredClone context
   { request, authorization } = context
   if request.domain == authorization.domain
-    grants = Grants.filter ( authorization.grants ), request
-    for grant in grants
+    any ( Grants.filter ( authorization.grants ), request ), ( grant ) ->
       if grant.resolvers?
         resolvers = Resolvers.expand grant.resolvers, authorization.resolvers
         await Resolvers.apply resolvers, context
       if grant.any?
-        matched = ( Expression.apply grant.any.from, context )
-          .some ( value ) ->
-            Bindings.match grant.any.bindings, 
-              { context..., [ grant.any.each ]: value }
-        if matched then return true
+        any ( Expression.apply grant.any.from, context ), ( value ) ->
+          Bindings.match grant.any.bindings, 
+            { context..., [ grant.any.each ]: value }
       else
-        matched = Bindings.match grants.bindings, context
-        if matched then return true
-    return false
+        Bindings.match grant.bindings, context
 
 bind = ( authorization, context ) ->
 

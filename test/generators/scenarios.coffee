@@ -4,15 +4,29 @@ import { test, success } from "@dashkite/amen"
 
 import { rclone } from "./helpers"
 
-import { verify, match } from "../../src"
+import { verify, match, decode } from "../../src"
 
 Actions =
 
-  verify: ({ rune, secret }) ->
-    assert verify { rune..., secret }
+  success:
 
-  match: ({ request, authorization }) ->
-    assert await match { request, authorization }
+    verify: ({ rune, secret }) ->
+      assert verify { rune..., secret }
+
+    match: ({ request, rune }) ->
+      [ authorization ] =  decode rune.rune # welp
+      assert await match { request, authorization }
+
+  failure:
+
+    verify: ({ rune, secret }) ->
+      assert !( verify { rune..., secret })
+
+    match: ({ request, rune }) ->
+      [ authorization ] =  decode rune.rune # welp
+      assert !( await match { request, authorization })
+
+      
 
 run = ( scenarios ) ->
   test "@dashkite/runes",
@@ -20,7 +34,10 @@ run = ( scenarios ) ->
       do ( scenario ) ->
         test scenario.name,
           for action in scenario.actions
-            test action, -> Actions[ action ] scenario.context
+            do ( action ) ->
+              f = Actions[ action.result ][ action.name ]
+              test "#{ action.name } #{ action.result}", 
+                -> f scenario.context
 
 export { run }
 
@@ -30,9 +47,14 @@ scenario = Fn.curry rclone Fn.rtee ( name, generator, scenarios ) ->
 export { scenario }
 
 action = Fn.curry rclone Fn.rtee ( action, scenario ) ->
-  scenario.actions.push action
+  scenario.actions.push { name: action, result: "success" }
 
 export { action }
+
+fail = Fn.curry rclone Fn.rtee ( action, scenario ) ->
+  scenario.actions.push { name: action, result: "failure" }
+
+export { fail }
 
 authorization = Fn.curry rclone Fn.rtee ( authorization, { context } ) ->
   context.authorization = authorization
