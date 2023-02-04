@@ -70,19 +70,22 @@ Bindings =
     else true
 
 match = ( context ) ->
-  context = structuredClone context
-  { request, authorization } = context
-  if request.domain == authorization.domain
-    any ( Grants.filter ( authorization.grants ), request ), ( grant ) ->
-      if grant.resolvers?
-        resolvers = Resolvers.expand grant.resolvers, authorization.resolvers
-        await Resolvers.apply resolvers, context
-      if grant.any?
-        any ( Expression.apply grant.any.from, context ), ( value ) ->
-          Bindings.match grant.any.bindings, 
-            { context..., [ grant.any.each ]: value }
-      else
-        Bindings.match grant.bindings, context
+  try
+    context = structuredClone context
+    { request, authorization } = context
+    if request.domain == authorization.domain
+      any ( Grants.filter ( authorization.grants ), request ), ( grant ) ->
+        if grant.resolvers?
+          resolvers = Resolvers.expand grant.resolvers, authorization.resolvers
+          await Resolvers.apply resolvers, context
+        if grant.any?
+          any ( Expression.apply grant.any.from, context ), ( value ) ->
+            Bindings.match grant.any.bindings, 
+              { context..., [ grant.any.each ]: value }
+        else
+          Bindings.match grant.bindings, context
+  catch
+    false
 
 bind = ( authorization, context ) ->
 

@@ -8,10 +8,9 @@ import { confidential } from "panda-confidential"
 import "./local-storage"
 
 import * as API from "./generators/apis"
-import * as Rune from "./generators/runes"
 import * as Scenarios from "./generators/scenarios"
 
-import { verify, match } from "../src"
+import { issue, verify, match, encode, decode } from "../src"
 
 Confidential = confidential()
 
@@ -28,8 +27,6 @@ do ->
       from: "bytes"
       to: "base64"
       await Confidential.randomBytes 16
-
-  # print await test "@dashkite/runes"
 
   api = do API.make Fn.pipe [
     API.resource "foo", Fn.pipe [
@@ -52,61 +49,72 @@ do ->
 
     make: ({ aspect, valid, benchmark }) ->
 
-      name = if aspect == "forged"
-        "forged request"
-      else if valid
-        "valid #{ aspect ? 'request' }"
+      authorization = {}
+
+      authorization.domain = "acme.org"
+
+      if ( valid || aspect != "expiry" )
+        authorization.expires = days: 1
       else
-        "invalid #{ aspect ? 'request' }"
+        authorization.expires = days: -1
 
-      Generators =
-        rune: []
-        scenario: []
+      if aspect != "malformed authorization"
+        authorization.grants = []
+        authorization.grants.push
+          resources: [ "foo" ]
+          methods: [ "get" ]
+          bindings: bar: "baz"
 
-      Generators.rune.push Rune.domain "acme.org"
 
-      Generators.rune.push if ( valid || aspect != "expiry" )
-        Rune.expires days: 1
-      else
-        Rune.expires days: -1
-
-      Generators.rune.push Rune.grant Fn.pipe [
-        Rune.resources API.match /^foo/, api
-        Rune.methods [ "get" ]
-        Rune.bindings bar: "baz"
-      ]
-
+      # TODO randomize so that it's not always the same thing
       if benchmark?
         for i in [1..100]
-          Generators.rune.push Rune.grant Fn.pipe [
-            Rune.resources API.match /^foo/, api
-            Rune.methods [ "get", "put", "delete", "post" ]
-            Rune.bindings bar: "baz"
-          ]
+          authorization.grants.push
+            resources: [ "foo" ]
+            methods: [ "get" ]
+            bindings: bar: "baz"
 
-      if aspect != "forged"
-        Generators.rune.push Rune.seal Secrets.guardian
+      rune = if aspect != "forged"
+        await issue { authorization, secret: Secrets.guardian }
       else
-        Generators.rune.push Rune.seal Secrets.forged
-      
-      rune = await do Rune.make Fn.pipe Generators.rune
+        await issue { authorization, secret: Secrets.forged }
 
-      if valid || !( aspect in [ "expiry", "forged" ])
-        Generators.scenario.push Scenarios.action "verify"
-      else
-        Generators.scenario.push Scenarios.fail "verify"
+      if aspect == "tamper"
+        [ authorization, hash ] = decode rune.rune # welp
+        authorization.grants[0].methods.push "put"
+        rune =
+          rune: encode [ authorization, hash ]
+          nonce: rune.nonce
 
-      if valid
-        Generators.scenario.push Scenarios.action "match"
-      else if !( aspect in [ "expiry", "forged" ])
-        Generators.scenario.push Scenarios.fail "match" 
+      if aspect == "malformed rune"
+        rune = "123456789"
 
-      if benchmark?
-        Generators.scenario.push Scenarios.benchmark benchmark
+      scenario = actions: [], context: { rune }
 
-      # Generators.scenario.push Scenarios.authorization authorization
-      Generators.scenario.push Scenarios.secret Secrets.guardian
-      Generators.scenario.push Scenarios.rune rune
+      scenario.name = switch aspect
+        when "forged" then "forged rune"
+        when "tamper" then "tampered authority"
+        when "benchmark" then "benchmark"
+        when "malformed rune", "malformed authority" then aspect
+        else
+          if valid
+            "valid #{ aspect ? 'request' }"
+          else
+            "invalid #{ aspect ? 'request' }"
+
+      switch aspect
+        when "expiry", "forged", "tamper", "malformed rune"
+          scenario.actions.push { name: "verify", result: "failure" }
+        when "benchmark"
+          scenario.actions.push { name: "benchmark", result: "success" }
+        else
+          scenario.actions.push { name: "verify", result: "success" }
+          if valid
+            scenario.actions.push { name: "match", result: "success" }
+          else
+            scenario.actions.push { name: "match", result: "failure" }
+
+      scenario.context.secret = Secrets.guardian
 
       domain = if ( valid || aspect != "domain" )
         "acme.org"
@@ -128,24 +136,23 @@ do ->
       else
         bar: "zab"
 
-      Generators.scenario.push Scenarios.request
+      scenario.context.request =
         domain: domain
         resource:
           name: resource
           bindings: bindings           
         method: method
       
-      Scenarios.scenario name, Fn.pipe Generators.scenario
+      scenario
   
-  _scenarios = [ await Scenario.make { valid: true } ]
+  scenarios = [ await Scenario.make { valid: true } ]
   
   for aspect in [ "domain", "resource", "method", "binding", "expiry" ]
-    _scenarios.push await Scenario.make { aspect, valid: false }
+    scenarios.push await Scenario.make { aspect, valid: false }
 
-  _scenarios.push await Scenario.make { aspect: "forged", valid: false }
-  
-  _scenarios.push await Scenario.make { valid: true, benchmark: 100 }
+  for aspect in [ "forged", "tamper", "malformed rune", "malformed authorization" ]
+    scenarios.push await Scenario.make { aspect, valid: false }
 
-  scenarios = do Scenarios.make Fn.pipe _scenarios
+  scenarios.push await Scenario.make { aspect: "benchmark", valid: true }
 
   print await Scenarios.run scenarios
