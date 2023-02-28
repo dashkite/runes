@@ -79,14 +79,6 @@ match = ( context ) ->
           resolvers = Resolvers.expand grant.resolvers, authorization.resolvers
           await Resolvers.apply resolvers, context
         if grant.any?
-          dude = ( Expression.apply grant.any.from, context )
-          if Type.isArray dude
-            console.log "ARRAY DUDE", dude
-            for item in dude
-              console.log item
-              if Type.isArray item
-                for thing in item
-                  console.log thing
           any ( Expression.apply grant.any.from, context ), ( value ) ->
             Bindings.match grant.any.bindings, 
               { context..., [ grant.any.each ]: value }
