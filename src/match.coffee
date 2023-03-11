@@ -66,12 +66,8 @@ Bindings =
           if bindings[key]? && value?
             result = Val.equal bindings[ key ], value
             if !result
-              console.log "BINDINGS FAIL", bindings
-              console.log "VALUE FAIL", value
             result
           else
-            console.log "BINDINGS FAIL", bindings
-            console.log "VALUE FAIL", value
             false
     else true
 
