@@ -64,9 +64,7 @@ Bindings =
       Object.entries ( Expression.apply target, context )
         .every ([ key, value ]) ->
           if bindings[key]? && value?
-            result = Val.equal bindings[ key ], value
-            if !result
-            result
+            Val.equal bindings[ key ], value
           else
             false
     else true
