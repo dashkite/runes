@@ -32,10 +32,10 @@ devDependencies:
     specifier: ^0.0.6
     version: 0.0.6
   '@dashkite/genie':
-    specifier: ^0.5.11
+    specifier: link:../genie
     version: 0.5.11
   '@dashkite/genie-presets':
-    specifier: ^0.7.0
+    specifier: link:../genie-presets
     version: 0.7.0
   '@dashkite/polaris':
     specifier: link:../polaris
