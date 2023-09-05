@@ -28,7 +28,6 @@
     "@dashkite/assert": "^0.1.4",
     "@dashkite/bake": "^0.0.6",
     "@dashkite/genie": "link:../genie",
-    "@dashkite/genie-presets": "link:../genie-presets",
     "@dashkite/polaris": "link:../polaris",
     "@dashkite/sky-presets": "link:../sky-presets",
     "panda-parchment": "^6.0.4"
