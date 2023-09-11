@@ -13,7 +13,7 @@ dependencies:
     version: 0.3.16
   '@js-temporal/polyfill':
     specifier: ^0.4.3
-    version: 0.4.3
+    version: 0.4.4
   panda-confidential:
     specifier: ^3.1.2
     version: 3.1.2
@@ -21,7 +21,7 @@ dependencies:
 devDependencies:
   '@dashkite/amen':
     specifier: ^0.2.0
-    version: 0.2.0
+    version: 0.2.2
   '@dashkite/amen-console':
     specifier: ^0.0.2
     version: 0.0.2
@@ -34,6 +34,12 @@ devDependencies:
   '@dashkite/genie':
     specifier: link:../genie
     version: link:../genie
+  '@dashkite/genie-coffee':
+    specifier: link:../genie-coffee
+    version: link:../genie-coffee
+  '@dashkite/genie-yaml':
+    specifier: link:../genie-yaml
+    version: link:../genie-yaml
   '@dashkite/polaris':
     specifier: link:../polaris
     version: link:../polaris
@@ -52,8 +58,8 @@ packages:
       chalk: 4.1.2
     dev: true
 
-  /@dashkite/amen@0.2.0:
-    resolution: {integrity: sha512-64cI0qvcLXFhfuvNGI/ebUgbs7Rx+45K1EjqsdLVYjEALeAPGqViujiSWVky9KHw1F93FVpJx1/B6mlZJLf2Tg==}
+  /@dashkite/amen@0.2.2:
+    resolution: {integrity: sha512-bJBbRiIcQaKBT2A+EOltZaZMqGCptPw7rfSnTsu1AiicYWrXwe41zwo2W0a079OpJTLsH9v2vnU20xMCP9mQqA==}
     dev: true
 
   /@dashkite/assert@0.1.4:
@@ -82,12 +88,12 @@ packages:
   /@dashkite/utf8@1.0.1:
     resolution: {integrity: sha512-58HZrEijYUG9p8SAf4o/NR7U3qUq//9XbkQ7T5cHIY/RFjCVg9vpWZlHXkcbZp7v3CAMJgEGVXt/5/upvOBQAw==}
 
-  /@js-temporal/polyfill@0.4.3:
-    resolution: {integrity: sha512-6Fmjo/HlkyVCmJzAPnvtEWlcbQUSRhi8qlN9EtJA/wP7FqXsevLLrlojR44kzNzrRkpf7eDJ+z7b4xQD/Ycypw==}
+  /@js-temporal/polyfill@0.4.4:
+    resolution: {integrity: sha512-2X6bvghJ/JAoZO52lbgyAPFj8uCflhTo2g7nkFzEQdXd/D8rEeD4HtmTEpmtGCva260fcd66YNXBOYdnmHqSOg==}
     engines: {node: '>=12'}
     dependencies:
       jsbi: 4.3.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@pandastrike/garden@8.0.1:
@@ -155,6 +161,6 @@ packages:
       has-flag: 4.0.0
     dev: true
 
-  /tslib@2.4.1:
-    resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
+  /tslib@2.6.2:
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
     dev: false
