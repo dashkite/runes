@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "genie test",
-    "build": "genie build"
+    "build": "genie build -x sky"
   },
   "repository": {
     "type": "git",
@@ -29,9 +29,9 @@
     "@dashkite/bake": "^0.0.6",
     "@dashkite/genie": "link:../genie",
     "@dashkite/genie-coffee": "link:../genie-coffee",
+    "@dashkite/genie-sky": "link:../genie-sky",
     "@dashkite/genie-yaml": "link:../genie-yaml",
     "@dashkite/polaris": "link:../polaris",
-    "@dashkite/sky-presets": "link:../sky-presets",
     "panda-parchment": "^6.0.4"
   },
   "dependencies": {

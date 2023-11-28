@@ -37,15 +37,15 @@ devDependencies:
   '@dashkite/genie-coffee':
     specifier: link:../genie-coffee
     version: link:../genie-coffee
+  '@dashkite/genie-sky':
+    specifier: link:../genie-sky
+    version: link:../genie-sky
   '@dashkite/genie-yaml':
     specifier: link:../genie-yaml
     version: link:../genie-yaml
   '@dashkite/polaris':
     specifier: link:../polaris
     version: link:../polaris
-  '@dashkite/sky-presets':
-    specifier: link:../sky-presets
-    version: link:../sky-presets
   panda-parchment:
     specifier: ^6.0.4
     version: 6.0.4
