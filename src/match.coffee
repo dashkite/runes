@@ -1,3 +1,4 @@
+import log from "@dashkite/kaiko"
 import * as Fn from "@dashkite/joy/function"
 import { generic } from "@dashkite/joy/generic"
 import * as Pred from "@dashkite/joy/predicate"
@@ -69,17 +70,25 @@ Bindings =
             false
     else true
 
-match = ( context ) ->
+match = log.wrap "Rune.match", ( context ) ->
+  log.debug "attempting to match rune to request"
   try
     context = structuredClone context
     { request, authorization } = context
     if request.domain == authorization.domain
+      log.debug "domain matched, looking for grant..."
       any ( Grants.filter ( authorization.grants ), request ), ( grant ) ->
         if grant.resolvers?
+          log.debug "grant has resolvers, resolving..."
           resolvers = Resolvers.expand grant.resolvers, authorization.resolvers
           await Resolvers.apply resolvers, context
         if grant.any?
+          log.debug "grant has 'any' condition, checking values..."
+          log.debug
+            request: request.resource.bindings
+            grant: grant.any.bindings
           any ( Expression.apply grant.any.from, context ), ( value ) ->
+            log.debug [ grant.any.each ]: value
             Bindings.match grant.any.bindings, 
               { context..., [ grant.any.each ]: value }
         else

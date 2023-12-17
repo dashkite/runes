@@ -27,7 +27,7 @@
     "@dashkite/amen-console": "^0.0.2",
     "@dashkite/assert": "^0.1.4",
     "@dashkite/bake": "^0.0.6",
-    "@dashkite/genie": "link:../genie",
+    "@dashkite/genie": "^0.7.3",
     "@dashkite/genie-coffee": "link:../genie-coffee",
     "@dashkite/genie-sky": "link:../genie-sky",
     "@dashkite/genie-yaml": "link:../genie-yaml",
@@ -37,6 +37,7 @@
   "dependencies": {
     "@dashkite/enchant": "link:../enchant",
     "@dashkite/joy": "^0.3.16",
+    "@dashkite/kaiko": "link:../kaiko",
     "@js-temporal/polyfill": "^0.4.3",
     "panda-confidential": "^3.1.2"
   }
