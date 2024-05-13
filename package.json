@@ -38,7 +38,7 @@
   "dependencies": {
     "@dashkite/enchant": "link:../enchant",
     "@dashkite/joy": "^0.3.16",
-    "@dashkite/kaiko": "link:../kaiko",
+    "@dashkite/kaiko": "^0.3.3",
     "@js-temporal/polyfill": "^0.4.3",
     "panda-confidential": "^3.1.2"
   }
