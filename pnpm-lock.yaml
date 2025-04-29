@@ -54,6 +54,9 @@ importers:
       '@dashkite/polaris':
         specifier: link:../polaris
         version: link:../polaris
+      '@dashkite/vista':
+        specifier: link:../vista
+        version: link:../vista
       panda-parchment:
         specifier: ^6.0.4
         version: 6.0.4

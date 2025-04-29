@@ -33,6 +33,7 @@
     "@dashkite/genie-sky": "link:../genie-sky",
     "@dashkite/genie-yaml": "link:../genie-yaml",
     "@dashkite/polaris": "link:../polaris",
+    "@dashkite/vista": "link:../vista",
     "panda-parchment": "^6.0.4"
   },
   "dependencies": {
