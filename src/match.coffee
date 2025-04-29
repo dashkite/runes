@@ -11,7 +11,6 @@ import { Action } from "@dashkite/enchant/action"
 import { Expression } from "@dashkite/enchant/expression"
 import { Rule } from "@dashkite/enchant/rules"
 
-# TODO [ticketed] we need a variant of this in Joy
 
 any = generic name: "any"
 

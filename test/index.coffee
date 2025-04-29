@@ -66,7 +66,6 @@ do ->
           bindings: bar: "baz"
 
 
-      # TODO randomize so that it's not always the same thing
       if benchmark?
         for i in [1..100]
           authorization.grants.push
