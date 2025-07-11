@@ -12,7 +12,8 @@
   },
   "scripts": {
     "test": "genie test",
-    "build": "genie build -x sky"
+    "build": "genie build -x sky",
+    "release": "genie release"
   },
   "repository": {
     "type": "git",
