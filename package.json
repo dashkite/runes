@@ -31,7 +31,7 @@
     "@dashkite/genie": "^0.8.4",
     "@dashkite/genie-clean": "0.2.0",
     "@dashkite/genie-coffee": "0.2.0",
-    "@dashkite/genie-release": "^0.2.3",
+    "@dashkite/genie-release": "^0.2.4",
     "@dashkite/genie-sky": "link:../genie-sky",
     "@dashkite/genie-yaml": "link:../genie-yaml",
     "@dashkite/polaris": "link:../polaris",
