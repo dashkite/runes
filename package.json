@@ -33,7 +33,7 @@
     "@dashkite/genie-coffee": "0.2.0",
     "@dashkite/genie-release": "^0.2.4",
     "@dashkite/genie-sky": "link:../genie-sky",
-    "@dashkite/genie-yaml": "link:../genie-yaml",
+    "@dashkite/genie-yaml": "0.1.0",
     "@dashkite/polaris": "link:../polaris",
     "panda-parchment": "^6.0.4"
   },
