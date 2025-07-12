@@ -40,8 +40,8 @@ importers:
         specifier: ^0.8.4
         version: 0.8.4
       '@dashkite/genie-clean':
-        specifier: link:../genie-clean
-        version: link:../genie-clean
+        specifier: 0.2.0
+        version: 0.2.0
       '@dashkite/genie-coffee':
         specifier: 0.2.0
         version: 0.2.0
@@ -624,6 +624,9 @@ packages:
 
   '@dashkite/base64@1.0.1':
     resolution: {integrity: sha512-7O3HajSgWaie/kme1bcdXQnVsMXn4A5m9YOaxWnEZ8z9LCrnJ8BGnpTgFJUqSC4mv0Z/0NBcwTmeGCoEc9VYoA==}
+
+  '@dashkite/genie-clean@0.2.0':
+    resolution: {integrity: sha512-1L6Rzoiu7yRixhI6uPTCNSo3wHx/y2RgVlnUDAdO3I4TBCeU1h0Kiytr32ZCK7i3BCatObAdWJt0+9Nc3ZSUIw==}
 
   '@dashkite/genie-coffee@0.2.0':
     resolution: {integrity: sha512-mZBmTYbCkjHUSNGDg6aeGn5aOCJwYJlfh3+NjsycE+q4WBzZHa8tWwODlNQdnRxUT9j3yhvW7aTVWf2xI14DGw==}
@@ -2161,6 +2164,12 @@ snapshots:
       '@dashkite/utf8': 1.0.1
 
   '@dashkite/base64@1.0.1': {}
+
+  '@dashkite/genie-clean@0.2.0':
+    dependencies:
+      '@dashkite/masonry': 0.13.0
+    transitivePeerDependencies:
+      - supports-color
 
   '@dashkite/genie-coffee@0.2.0':
     dependencies:
