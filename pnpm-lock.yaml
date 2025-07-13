@@ -51,6 +51,9 @@ importers:
       '@dashkite/genie-sky':
         specifier: link:../genie-sky
         version: link:../genie-sky
+      '@dashkite/genie-sky-schema':
+        specifier: link:../genie-sky-schema
+        version: link:../genie-sky-schema
       '@dashkite/genie-yaml':
         specifier: 0.1.0
         version: 0.1.0
