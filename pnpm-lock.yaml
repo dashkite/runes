@@ -52,8 +52,8 @@ importers:
         specifier: link:../genie-sky
         version: link:../genie-sky
       '@dashkite/genie-sky-schema':
-        specifier: link:../genie-sky-schema
-        version: link:../genie-sky-schema
+        specifier: ^0.8.1
+        version: 0.8.1
       '@dashkite/genie-yaml':
         specifier: 0.7.0
         version: 0.7.0
@@ -637,6 +637,9 @@ packages:
   '@dashkite/genie-release@0.2.10':
     resolution: {integrity: sha512-8pczG/SY+Nbstl+cIc9s0+tsNewNTyNfi60g7RHvpzxe6Qd2/WUCIfmFqcF39CAUVlAq94+6M29vhDOwPlLk/Q==}
 
+  '@dashkite/genie-sky-schema@0.8.1':
+    resolution: {integrity: sha512-QsFRoFkd4ok+V3sbfwIK5iRsCrCr80LAi78MEcFeyBzhX8LCD8DeSA0OdRyWU8QM+nWuvBIGM+1fG4U+MgZBSQ==}
+
   '@dashkite/genie-yaml@0.7.0':
     resolution: {integrity: sha512-XpliyPq/hF9BXMxBbD2wKCsNEI4ViLIzfRam2dS7lsoX4LR2fM5xPrZ/0RFdh3Tar1pugnEdbSZTDGfn3LPDwA==}
 
@@ -680,6 +683,9 @@ packages:
 
   '@dashkite/masonry@0.14.0':
     resolution: {integrity: sha512-5POHf/fpqgFba4Xbrr8oNHIpkKTD1WgFTZMjBZBvluv8YBWzLayAd9l4R0TYy+MybBVFFJ2Tj7v5DlIu6dPgvw==}
+
+  '@dashkite/masonry@0.21.0':
+    resolution: {integrity: sha512-3S9WLN+TuP1aUjNbcjshe0LV9otoHFujNs08Ysdt4tzNxpjdvc3AuynP9c188qB2+RtPjp1q8AkUNwUN2JaFDA==}
 
   '@dashkite/tweetnacl@1.0.3':
     resolution: {integrity: sha512-qBw5yhOw8mCe7fV6sw/5DIfQLW3txB+MlSDngf7h2WwnRz5CWzmhVBnKuYHcMXX9u50T4iW0AR/FwEl6Tm/TMQ==}
@@ -843,6 +849,9 @@ packages:
 
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
+
+  ajv@8.17.1:
+    resolution: {integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==}
 
   ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
@@ -1021,6 +1030,9 @@ packages:
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
+  fast-uri@3.0.6:
+    resolution: {integrity: sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==}
+
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
 
@@ -1168,6 +1180,9 @@ packages:
 
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
+
+  json-schema-traverse@1.0.0:
+    resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
 
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
@@ -1318,6 +1333,10 @@ packages:
   regjsparser@0.12.0:
     resolution: {integrity: sha512-cnE+y8bz4NhMjISKbgeVJtqNbtf5QpjZP+Bslo+UqkIt9QPnX9q095eiRRASJG1/tz6dlNr6Z5NsBiWYokp6EQ==}
     hasBin: true
+
+  require-from-string@2.0.2:
+    resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
+    engines: {node: '>=0.10.0'}
 
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
@@ -2212,6 +2231,14 @@ snapshots:
       '@dashkite/zephyr': 0.2.0
       zx: 8.7.1
 
+  '@dashkite/genie-sky-schema@0.8.1':
+    dependencies:
+      '@dashkite/masonry': 0.21.0
+      ajv: 8.17.1
+      js-yaml: 4.1.0
+    transitivePeerDependencies:
+      - supports-color
+
   '@dashkite/genie-yaml@0.7.0':
     dependencies:
       '@dashkite/masonry': 0.14.0
@@ -2286,6 +2313,17 @@ snapshots:
       - supports-color
 
   '@dashkite/masonry@0.14.0':
+    dependencies:
+      '@babel/core': 7.22.15
+      '@babel/preset-env': 7.22.15(@babel/core@7.22.15)
+      '@dashkite/joy': 0.3.16
+      chalk: 4.1.2
+      chokidar: 3.6.0
+      fast-glob: 3.3.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@dashkite/masonry@0.21.0':
     dependencies:
       '@babel/core': 7.22.15
       '@babel/preset-env': 7.22.15(@babel/core@7.22.15)
@@ -2439,6 +2477,13 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
+
+  ajv@8.17.1:
+    dependencies:
+      fast-deep-equal: 3.1.3
+      fast-uri: 3.0.6
+      json-schema-traverse: 1.0.0
+      require-from-string: 2.0.2
 
   ansi-regex@5.0.1: {}
 
@@ -2656,6 +2701,8 @@ snapshots:
 
   fast-levenshtein@2.0.6: {}
 
+  fast-uri@3.0.6: {}
+
   fastq@1.19.1:
     dependencies:
       reusify: 1.1.0
@@ -2776,6 +2823,8 @@ snapshots:
   json-buffer@3.0.1: {}
 
   json-schema-traverse@0.4.1: {}
+
+  json-schema-traverse@1.0.0: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
 
@@ -2913,6 +2962,8 @@ snapshots:
   regjsparser@0.12.0:
     dependencies:
       jsesc: 3.0.2
+
+  require-from-string@2.0.2: {}
 
   resolve-from@4.0.0: {}
 
