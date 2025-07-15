@@ -58,8 +58,8 @@ importers:
         specifier: 0.7.0
         version: 0.7.0
       '@dashkite/polaris':
-        specifier: link:../polaris
-        version: link:../polaris
+        specifier: 0.7.0
+        version: 0.7.0
       panda-parchment:
         specifier: ^6.0.4
         version: 6.0.4
@@ -660,6 +660,9 @@ packages:
   '@dashkite/kaiko@0.3.3':
     resolution: {integrity: sha512-XnAvVr9y2MsDqMLr4A24vkLF7Iuq3E8RjHEEpqhe29P5NevVX9jXKcXUStNMp9MSJbjHd2pqUNiM5Vvdja9ggg==}
 
+  '@dashkite/lru-cache@0.1.0':
+    resolution: {integrity: sha512-bAN6/NxYrorgiKMdh0/f6U6AMdLoBFn9sJUZDD+Od/Fw6O1istAMF2hQugdO3SOeBOUi9dQN+rXMP60dJ/2zOw==}
+
   '@dashkite/masonry-coffee@0.2.0':
     resolution: {integrity: sha512-xJO48SIRpsYbJF32CwpA6yeEJhNh+DtxCucyt4MNJqO0yru9X7hoxZsHneRoUE+kISD0KTO8DLQiHv21nU/V2A==}
 
@@ -686,6 +689,12 @@ packages:
 
   '@dashkite/masonry@0.21.0':
     resolution: {integrity: sha512-3S9WLN+TuP1aUjNbcjshe0LV9otoHFujNs08Ysdt4tzNxpjdvc3AuynP9c188qB2+RtPjp1q8AkUNwUN2JaFDA==}
+
+  '@dashkite/polaris@0.7.0':
+    resolution: {integrity: sha512-rlMU5liZIXnVdzYob5Ji6k+Mh2+er5Is1iI3R+reljpKOJd32Gt2j/Idgepf9WKSI22T8t3NxIEhx2YBDOYJ3A==}
+
+  '@dashkite/scan@0.4.0':
+    resolution: {integrity: sha512-fC7D9+SCy34D5qi25ZAH8tzJgqPc9aBBhqrRCQ3RoD6cDrrfvlROxLzKsLfs+zv05yHPtuc/9ZONyyAW3/JTvg==}
 
   '@dashkite/tweetnacl@1.0.3':
     resolution: {integrity: sha512-qBw5yhOw8mCe7fV6sw/5DIfQLW3txB+MlSDngf7h2WwnRz5CWzmhVBnKuYHcMXX9u50T4iW0AR/FwEl6Tm/TMQ==}
@@ -1191,6 +1200,10 @@ packages:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
     hasBin: true
+
+  jsonpath-plus@7.2.0:
+    resolution: {integrity: sha512-zBfiUPM5nD0YZSBT/o/fbCUlCcepMIdP0CJZxM1+KgA4f2T206f6VAg9e7mX35+KlMaIc5qXW34f3BnwJ3w+RA==}
+    engines: {node: '>=12.0.0'}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -2272,6 +2285,8 @@ snapshots:
 
   '@dashkite/kaiko@0.3.3': {}
 
+  '@dashkite/lru-cache@0.1.0': {}
+
   '@dashkite/masonry-coffee@0.2.0':
     dependencies:
       '@swc/core': 1.12.14
@@ -2333,6 +2348,16 @@ snapshots:
       fast-glob: 3.3.3
     transitivePeerDependencies:
       - supports-color
+
+  '@dashkite/polaris@0.7.0':
+    dependencies:
+      '@dashkite/joy': 0.7.0
+      '@dashkite/scan': 0.4.0
+      jsonpath-plus: 7.2.0
+
+  '@dashkite/scan@0.4.0':
+    dependencies:
+      '@dashkite/lru-cache': 0.1.0
 
   '@dashkite/tweetnacl@1.0.3': {}
 
@@ -2829,6 +2854,8 @@ snapshots:
   json-stable-stringify-without-jsonify@1.0.1: {}
 
   json5@2.2.3: {}
+
+  jsonpath-plus@7.2.0: {}
 
   keyv@4.5.4:
     dependencies:
