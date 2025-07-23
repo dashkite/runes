@@ -58,8 +58,8 @@ importers:
         specifier: 0.7.0
         version: 0.7.0
       '@dashkite/polaris':
-        specifier: 0.7.0
-        version: 0.7.0
+        specifier: 0.10.2
+        version: 0.10.2
       panda-parchment:
         specifier: ^6.0.4
         version: 6.0.4
@@ -1222,6 +1222,9 @@ packages:
   '@dashkite/parse@0.7.0':
     resolution: {integrity: sha512-lhU3LuRKCUVOgswBHjTvLnGIzhOk+QIxUQVSRNv+U1iPSzjpypFd/EBL5UQQ4qqU2w9u8M63FIBFHcxRiB/oDw==}
 
+  '@dashkite/polaris@0.10.2':
+    resolution: {integrity: sha512-MNDi2Xza4aZME7QYLdPGJBM79bxNxlkkU7mVLtHiKWEB5XrhE3IA+hpGWpODI1t37hPI3OKS5wGZar/38fmqhQ==}
+
   '@dashkite/polaris@0.3.0':
     resolution: {integrity: sha512-DnUVo1tlTSTFGz7y0TadJJvY8Ly4HoNeD4+ZVDKWWLLbBLi48le2KyuURZ53KKViom1IuWEFWUl5gNtcZ/2Duw==}
 
@@ -2164,7 +2167,6 @@ packages:
 
   bun@1.2.19:
     resolution: {integrity: sha512-P70KUfH9cvgcl8Hjvamr98NinEatV23yX6qaY7z1+3rBPdds0oVX0u6FfrYnWc8F3ayFQ4do6/6xBLWY4itJkQ==}
-    cpu: [arm64, x64, aarch64]
     os: [darwin, linux, win32]
     hasBin: true
 
@@ -7002,6 +7004,12 @@ snapshots:
   '@dashkite/parse@0.7.0':
     dependencies:
       '@dashkite/joy': 0.3.16
+
+  '@dashkite/polaris@0.10.2':
+    dependencies:
+      '@dashkite/joy': 0.7.0
+      '@dashkite/scan': 0.4.0
+      jsonpath-plus: 7.2.0
 
   '@dashkite/polaris@0.3.0':
     dependencies:
