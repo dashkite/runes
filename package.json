@@ -1,6 +1,6 @@
 {
   "name": "@dashkite/runes",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "Authenticated authorization for HTTP",
   "exports": {
     ".": {
