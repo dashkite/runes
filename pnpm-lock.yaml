@@ -37,8 +37,8 @@ importers:
         specifier: ^0.0.6
         version: 0.0.6
       '@dashkite/genie':
-        specifier: ^0.20.8
-        version: 0.20.8
+        specifier: ^0.20.9
+        version: 0.20.9
       '@dashkite/genie-clean':
         specifier: ^0.9.0
         version: 0.9.0
@@ -58,8 +58,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.0
       '@dashkite/polaris':
-        specifier: ^0.10.10
-        version: 0.10.10
+        specifier: ^0.10.11
+        version: 0.10.11
       panda-parchment:
         specifier: ^6.0.4
         version: 6.0.4
@@ -1079,11 +1079,11 @@ packages:
   '@dashkite/dracarys@0.2.0':
     resolution: {integrity: sha512-ysXI+GjlPDNUZjr5DV8oI+24gO5m79S6pVFDhqfKIgH9z6ovgv8RSHz+LzdIEaHa3437uwuxE2sINSVbBcftSA==}
 
-  '@dashkite/drn-sky@0.8.7':
-    resolution: {integrity: sha512-Nxt9Kb3nk7tROFeDieXe3m04FnxRrvdyjWhzeyVHzZFC7tRIKJ1yXD1+JX8dqm4s33wvYKn2cDdYsNR0xjOm3w==}
+  '@dashkite/drn-sky@0.8.8':
+    resolution: {integrity: sha512-RQbhOILWuctPvE8dgTMIqveHKnJhuHQbKMYxvLVd1MV/Kn1WPO5VQOHosF+F5hkdSV64uG9rnNsBN1HsXQTbhA==}
 
-  '@dashkite/drn@0.12.8':
-    resolution: {integrity: sha512-tQqvyT+4z3bzlL8Z9zZSYySmtbCz2iinDuCxI9oElrsWZNvRrvYIePkzrRYCBwu/XSq06jsigVV2yz3V04p0yQ==}
+  '@dashkite/drn@0.12.9':
+    resolution: {integrity: sha512-GgOwkmo3DF5UNKTy1QBWMsdll+6z6w506/6j9Bo5ZSCb1v9Z8tr6nQ9CS+51N4X0jn8q6E6MvFaSsLHPyzEnLw==}
 
   '@dashkite/enchant@0.2.0':
     resolution: {integrity: sha512-DRDfVoybAHCI9LDBEwc1WtsgprPyECMf4oIhtfl0RZw3fqancAS7qhw5U5thv6I4/18nL5OPC+GEazzC6oXwrg==}
@@ -1112,8 +1112,8 @@ packages:
   '@dashkite/genie-yaml@0.7.0':
     resolution: {integrity: sha512-XpliyPq/hF9BXMxBbD2wKCsNEI4ViLIzfRam2dS7lsoX4LR2fM5xPrZ/0RFdh3Tar1pugnEdbSZTDGfn3LPDwA==}
 
-  '@dashkite/genie@0.20.8':
-    resolution: {integrity: sha512-zpKtzW1hIjAOQvCr+92FlKhbHZTqLYyiumLAl8R+tX4BkmBcarhEccaGBsq0it023afAYzChLrg6r4Cduunanw==}
+  '@dashkite/genie@0.20.9':
+    resolution: {integrity: sha512-5EVuUP0q/xS35R/tV6EmFLwVct2ao3JSR11Ff3r5nvWUK+kP4WqvX+sLk6dgHEkc1cOZwMX03FwDN93UUqtMKQ==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -1207,8 +1207,8 @@ packages:
   '@dashkite/messages@0.6.0':
     resolution: {integrity: sha512-S4X+fYcQpqQzBj86E9hEMBuTfas4J/7qvdd0Sa9WyGBGHqNBCznacnXrET286GI7IUZAC0iN2sR2CgV22/6eIQ==}
 
-  '@dashkite/messages@0.9.10':
-    resolution: {integrity: sha512-3IAObCpOwNX3Mc4Jr+mndmtOOQL5TTNVsnQcVEpf+bO7ShKhJgNAzmAih+T2YKRtqRrmN1vXZCFIDqJnD2u8Lw==}
+  '@dashkite/messages@0.9.11':
+    resolution: {integrity: sha512-5GiBbqPrmiZv5Fj8G5xR/JMTEK9EQl0uLEdwCreiGFyrso9u2MuFowGv5FtlBVw9jd+mSjLhCAzK11w1jvVe5g==}
 
   '@dashkite/parse@0.4.3':
     resolution: {integrity: sha512-bE0kBjaGYjUnCzWJelQnx8vsfJ9YP07aRTVFZoY7TZWvMmnihoCSugL4IVWAOA2O0EAZXjT8FcjA4bNJ/BQwwg==}
@@ -1216,8 +1216,8 @@ packages:
   '@dashkite/parse@0.7.0':
     resolution: {integrity: sha512-lhU3LuRKCUVOgswBHjTvLnGIzhOk+QIxUQVSRNv+U1iPSzjpypFd/EBL5UQQ4qqU2w9u8M63FIBFHcxRiB/oDw==}
 
-  '@dashkite/polaris@0.10.10':
-    resolution: {integrity: sha512-zIVSvsgiY2UGOfclJhpC2lzK68+fFvnAYcy4C1qHOR+++5k0OT8a1ZOsnFQMbLxSIOnPGB5qgcfVKILvC0cFug==}
+  '@dashkite/polaris@0.10.11':
+    resolution: {integrity: sha512-tYYN+Ozxj1oK+7Zt8RNvk6N0XWv/kVlU+GD+jJNAhjpw3iORKbcigcBXl8eu8m/OfPfa525YCNz3N4/Uuf5m5g==}
 
   '@dashkite/polaris@0.3.0':
     resolution: {integrity: sha512-DnUVo1tlTSTFGz7y0TadJJvY8Ly4HoNeD4+ZVDKWWLLbBLi48le2KyuURZ53KKViom1IuWEFWUl5gNtcZ/2Duw==}
@@ -1885,8 +1885,8 @@ packages:
     resolution: {integrity: sha512-zmPitbQ8+6zNutpwgcQuLcsEpn/Cj54Kbn7L5pX0Os5kdWplB7xPgEh/g+SWOB/qmows2gpuCaPyduq8ZZRnxA==}
     deprecated: This is a stub types definition. minimatch provides its own type definitions, so you do not need this installed.
 
-  '@types/node@24.1.0':
-    resolution: {integrity: sha512-ut5FthK5moxFKH2T1CUOC6ctR67rQRvvHdFLCD2Ql6KXmMuCrjsSsRI9UsLCm9M18BMwClv4pn327UvB7eeO1w==}
+  '@types/node@24.2.0':
+    resolution: {integrity: sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==}
 
   '@types/uuid@9.0.8':
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
@@ -2204,8 +2204,8 @@ packages:
   convert-source-map@1.9.0:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
 
-  core-js-compat@3.44.0:
-    resolution: {integrity: sha512-JepmAj2zfl6ogy34qfWtcE7nHKAJnKsQFRn++scjVS2bZFllwptzw61BZcZFYBPpUznLfAvh0LGhxKppk04ClA==}
+  core-js-compat@3.45.0:
+    resolution: {integrity: sha512-gRoVMBawZg0OnxaVv3zpqLLxaHmsubEGyTnqdpI/CEBvX4JadI1dMSHxagThprYRtSVbuQxvi6iUatdPxohHpA==}
 
   core-js@2.6.12:
     resolution: {integrity: sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==}
@@ -2286,8 +2286,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  electron-to-chromium@1.5.194:
-    resolution: {integrity: sha512-SdnWJwSUot04UR51I2oPD8kuP2VI37/CADR1OHsFOUzZIvfWJBO6q11k5P/uKNyTT3cdOsnyjkrZ+DDShqYqJA==}
+  electron-to-chromium@1.5.195:
+    resolution: {integrity: sha512-URclP0iIaDUzqcAyV1v2PgduJ9N0IdXmWsnPzPfelvBmjmZzEy6xJcjb1cXj+TbYqXgtLrjHEoaSIdTYhw4ezg==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3594,8 +3594,8 @@ packages:
   undici-types@5.28.4:
     resolution: {integrity: sha512-3OeMF5Lyowe8VW0skf5qaIE7Or3yS9LS7fvMUI0gg4YxpIBVg0L8BxCmROw2CcYhSkpR68Epz7CGc8MPj94Uww==}
 
-  undici-types@7.8.0:
-    resolution: {integrity: sha512-9UJ2xGDvQ43tYyVMpuHlsgApydB8ZKfVYTsLDhXkFL/6gfkp+U8xTGdh8pMJv1SpZna0zxG1DwsKZsreLbXBxw==}
+  undici-types@7.10.0:
+    resolution: {integrity: sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag==}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
     resolution: {integrity: sha512-dA8WbNeb2a6oQzAQ55YlT5vQAWGV9WXOsi3SskE3bcCdM0P4SDd+24zS/OCacdRq5BkdsRj9q3Pg6YyQoxIGqg==}
@@ -6433,7 +6433,7 @@ snapshots:
       babel-plugin-polyfill-corejs2: 0.4.14(@babel/core@7.22.15)
       babel-plugin-polyfill-corejs3: 0.8.7(@babel/core@7.22.15)
       babel-plugin-polyfill-regenerator: 0.5.5(@babel/core@7.22.15)
-      core-js-compat: 3.44.0
+      core-js-compat: 3.45.0
       semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
@@ -6591,11 +6591,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@dashkite/drn-sky@0.8.7(@aws-sdk/credential-provider-node@3.529.0)(encoding@0.1.13)':
+  '@dashkite/drn-sky@0.8.8(@aws-sdk/credential-provider-node@3.529.0)(encoding@0.1.13)':
     dependencies:
       '@dashkite/bake': 0.0.6
       '@dashkite/dolores': 0.8.0(@aws-sdk/credential-provider-node@3.529.0)(encoding@0.1.13)
-      '@dashkite/drn': 0.12.8
+      '@dashkite/drn': 0.12.9
       '@dashkite/joy': 0.7.0
       '@dashkite/sky-local-storage': 0.8.0
       '@dashkite/xrl': 0.4.0
@@ -6607,7 +6607,7 @@ snapshots:
       - aws-crt
       - encoding
 
-  '@dashkite/drn@0.12.8':
+  '@dashkite/drn@0.12.9':
     dependencies:
       '@dashkite/bake': 0.0.6
       '@dashkite/joy': 0.7.0
@@ -6678,7 +6678,7 @@ snapshots:
       '@dashkite/bake': 0.0.6
       '@dashkite/diff': 0.7.0(@aws-sdk/credential-provider-node@3.529.0)(encoding@0.1.13)
       '@dashkite/dolores': 0.8.0(@aws-sdk/credential-provider-node@3.529.0)(encoding@0.1.13)
-      '@dashkite/drn-sky': 0.8.7(@aws-sdk/credential-provider-node@3.529.0)(encoding@0.1.13)
+      '@dashkite/drn-sky': 0.8.8(@aws-sdk/credential-provider-node@3.529.0)(encoding@0.1.13)
       '@dashkite/graphene-core': 0.4.0
       '@dashkite/joy': 0.7.0
       '@dashkite/katana': 0.4.8
@@ -6688,8 +6688,8 @@ snapshots:
       '@dashkite/masonry-targets': 0.9.0
       '@dashkite/masonry-watch': 0.4.0(@aws-sdk/credential-provider-node@3.529.0)(encoding@0.1.13)
       '@dashkite/masonry-yaml': 0.8.0
-      '@dashkite/messages': 0.9.10
-      '@dashkite/polaris': 0.10.10
+      '@dashkite/messages': 0.9.11
+      '@dashkite/polaris': 0.10.11
       '@dashkite/sky-alb': 0.0.4
       '@dashkite/sky-local-storage': 0.8.0
       '@dashkite/template': 0.0.1
@@ -6744,7 +6744,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@dashkite/genie@0.20.8':
+  '@dashkite/genie@0.20.9':
     dependencies:
       '@dashkite/joy': 0.7.0
       '@dashkite/kaiko': 0.3.3
@@ -6922,7 +6922,7 @@ snapshots:
       '@dashkite/generic': 0.5.0
       '@dashkite/joy': 0.7.0
 
-  '@dashkite/messages@0.9.10':
+  '@dashkite/messages@0.9.11':
     dependencies:
       '@dashkite/format-text': 0.5.0
       '@dashkite/generic': 0.5.0
@@ -6936,7 +6936,7 @@ snapshots:
     dependencies:
       '@dashkite/joy': 0.3.16
 
-  '@dashkite/polaris@0.10.10':
+  '@dashkite/polaris@0.10.11':
     dependencies:
       '@dashkite/joy': 0.7.0
       '@dashkite/scan': 0.4.0
@@ -7864,7 +7864,7 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 6.0.0
-      '@types/node': 24.1.0
+      '@types/node': 24.2.0
 
   '@types/json-schema@7.0.15': {}
 
@@ -7872,9 +7872,9 @@ snapshots:
     dependencies:
       minimatch: 10.0.3
 
-  '@types/node@24.1.0':
+  '@types/node@24.2.0':
     dependencies:
-      undici-types: 7.8.0
+      undici-types: 7.10.0
 
   '@types/uuid@9.0.8': {}
 
@@ -8060,7 +8060,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.22.15
       '@babel/helper-define-polyfill-provider': 0.4.4(@babel/core@7.22.15)
-      core-js-compat: 3.44.0
+      core-js-compat: 3.45.0
     transitivePeerDependencies:
       - supports-color
 
@@ -8115,7 +8115,7 @@ snapshots:
   browserslist@4.25.1:
     dependencies:
       caniuse-lite: 1.0.30001731
-      electron-to-chromium: 1.5.194
+      electron-to-chromium: 1.5.195
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.25.1)
 
@@ -8234,7 +8234,7 @@ snapshots:
 
   convert-source-map@1.9.0: {}
 
-  core-js-compat@3.44.0:
+  core-js-compat@3.45.0:
     dependencies:
       browserslist: 4.25.1
 
@@ -8304,7 +8304,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  electron-to-chromium@1.5.194: {}
+  electron-to-chromium@1.5.195: {}
 
   emoji-regex@8.0.0: {}
 
@@ -8795,7 +8795,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.1.0
+      '@types/node': 24.2.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -9577,7 +9577,7 @@ snapshots:
 
   undici-types@5.28.4: {}
 
-  undici-types@7.8.0: {}
+  undici-types@7.10.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 
