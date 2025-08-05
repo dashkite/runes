@@ -58,8 +58,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.0
       '@dashkite/polaris':
-        specifier: ^0.10.12
-        version: 0.10.12
+        specifier: ^0.10.13
+        version: 0.10.13
       panda-parchment:
         specifier: ^6.0.4
         version: 6.0.4
@@ -1207,8 +1207,8 @@ packages:
   '@dashkite/messages@0.6.0':
     resolution: {integrity: sha512-S4X+fYcQpqQzBj86E9hEMBuTfas4J/7qvdd0Sa9WyGBGHqNBCznacnXrET286GI7IUZAC0iN2sR2CgV22/6eIQ==}
 
-  '@dashkite/messages@0.9.12':
-    resolution: {integrity: sha512-sThSZdzlgkCv3b03feBnzj4v65e9hlnFN7obBNrJyfWrJeNjz88FxrCX0dzr0PDhHjNOaAVBFLpLyOJUmf/K0g==}
+  '@dashkite/messages@0.9.13':
+    resolution: {integrity: sha512-gBhfde92CyQD4hJiRpnYWXKrdRqnAdRSLrHjHwl4P6PJG6qzH06VpY4omCVpsj5JitBUrxmyhjiQg/AoRI+B7g==}
 
   '@dashkite/parse@0.4.3':
     resolution: {integrity: sha512-bE0kBjaGYjUnCzWJelQnx8vsfJ9YP07aRTVFZoY7TZWvMmnihoCSugL4IVWAOA2O0EAZXjT8FcjA4bNJ/BQwwg==}
@@ -1216,8 +1216,8 @@ packages:
   '@dashkite/parse@0.7.0':
     resolution: {integrity: sha512-lhU3LuRKCUVOgswBHjTvLnGIzhOk+QIxUQVSRNv+U1iPSzjpypFd/EBL5UQQ4qqU2w9u8M63FIBFHcxRiB/oDw==}
 
-  '@dashkite/polaris@0.10.12':
-    resolution: {integrity: sha512-jGYRi2Zeg7URNuKiGpO4cKzv/RPwRfVhdTYsUfxJ3TYZQKpRv1hBKDu4Z8Qe9tc4MRSmbDc/gcFJ0i7qVPvoEA==}
+  '@dashkite/polaris@0.10.13':
+    resolution: {integrity: sha512-8/b+DzQ43WpX87DGLf6RIEN2xyqrlDdcIlnZm+ewHLFCyX9nRRYQla9mZw10htNnnCoYXLMed2Gb7LHWVOGMwA==}
 
   '@dashkite/polaris@0.3.0':
     resolution: {integrity: sha512-DnUVo1tlTSTFGz7y0TadJJvY8Ly4HoNeD4+ZVDKWWLLbBLi48le2KyuURZ53KKViom1IuWEFWUl5gNtcZ/2Duw==}
@@ -6688,8 +6688,8 @@ snapshots:
       '@dashkite/masonry-targets': 0.9.0
       '@dashkite/masonry-watch': 0.4.0(@aws-sdk/credential-provider-node@3.529.0)(encoding@0.1.13)
       '@dashkite/masonry-yaml': 0.8.0
-      '@dashkite/messages': 0.9.12
-      '@dashkite/polaris': 0.10.12
+      '@dashkite/messages': 0.9.13
+      '@dashkite/polaris': 0.10.13
       '@dashkite/sky-alb': 0.0.4
       '@dashkite/sky-local-storage': 0.8.0
       '@dashkite/template': 0.0.1
@@ -6922,7 +6922,7 @@ snapshots:
       '@dashkite/generic': 0.5.0
       '@dashkite/joy': 0.7.0
 
-  '@dashkite/messages@0.9.12':
+  '@dashkite/messages@0.9.13':
     dependencies:
       '@dashkite/format-text': 0.5.0
       '@dashkite/generic': 0.5.0
@@ -6936,7 +6936,7 @@ snapshots:
     dependencies:
       '@dashkite/joy': 0.3.16
 
-  '@dashkite/polaris@0.10.12':
+  '@dashkite/polaris@0.10.13':
     dependencies:
       '@dashkite/joy': 0.7.0
       '@dashkite/scan': 0.4.0
