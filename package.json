@@ -35,7 +35,7 @@
     "@dashkite/genie-sky": "^0.6.15",
     "@dashkite/genie-sky-schema": "^0.8.1",
     "@dashkite/genie-yaml": "^0.7.0",
-    "@dashkite/polaris": "^0.10.18",
+    "@dashkite/polaris": "^0.10.19",
     "panda-parchment": "^6.0.4"
   },
   "dependencies": {
