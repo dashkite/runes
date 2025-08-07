@@ -58,8 +58,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.0
       '@dashkite/polaris':
-        specifier: ^0.10.24
-        version: 0.10.24
+        specifier: ^0.10.25
+        version: 0.10.25
       panda-parchment:
         specifier: ^6.0.4
         version: 6.0.4
@@ -1219,8 +1219,8 @@ packages:
   '@dashkite/polaris@0.10.12':
     resolution: {integrity: sha512-jGYRi2Zeg7URNuKiGpO4cKzv/RPwRfVhdTYsUfxJ3TYZQKpRv1hBKDu4Z8Qe9tc4MRSmbDc/gcFJ0i7qVPvoEA==}
 
-  '@dashkite/polaris@0.10.24':
-    resolution: {integrity: sha512-VGaCXF2ZPkZABISohFxwXdnpdQsYJaE7wjCxndVpKq9MyoxFUSiHGZG1s45RvP6k9Dp1fDzlGa2wIZBeoKdDNA==}
+  '@dashkite/polaris@0.10.25':
+    resolution: {integrity: sha512-Yh+c4oy6Z/7DXsSAdoB1wp9l6M93r5Y3tX5h4VXqPsPJhgM7SbDNnXJYj/7rv/0waFBjHpJDkJmIkajweDfpAQ==}
 
   '@dashkite/polaris@0.3.0':
     resolution: {integrity: sha512-DnUVo1tlTSTFGz7y0TadJJvY8Ly4HoNeD4+ZVDKWWLLbBLi48le2KyuURZ53KKViom1IuWEFWUl5gNtcZ/2Duw==}
@@ -6945,7 +6945,7 @@ snapshots:
       '@dashkite/scan': 0.4.0
       jsonpath-plus: 7.2.0
 
-  '@dashkite/polaris@0.10.24':
+  '@dashkite/polaris@0.10.25':
     dependencies:
       '@dashkite/joy': 0.7.0
       '@dashkite/scan': 0.4.0
