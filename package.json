@@ -39,7 +39,7 @@
     "panda-parchment": "^6.0.4"
   },
   "dependencies": {
-    "@dashkite/enchant": "^0.2.0",
+    "@dashkite/enchant": "link:../enchant",
     "@dashkite/joy": "^0.7.0",
     "@dashkite/kaiko": "^0.3.3",
     "@js-temporal/polyfill": "^0.4.4",
